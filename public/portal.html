@@ -7588,7 +7588,9 @@
             `<ContactMobile>${app.contactPerson?.mobile || ""}</ContactMobile>` +
             `<VehicleCount>${(app.vehicles || []).length}</VehicleCount>` +
             `<Vehicles>${vehicles}</Vehicles>` +
-            `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>`;
+            `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>` +
+            `<LOCALE>en_IR</LOCALE>` +
+            `<Q_Basic_Details_Source>Portal</Q_Basic_Details_Source>`;
 
           try {
             // ── Print full input XML before sending ──
