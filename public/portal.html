@@ -7576,17 +7576,18 @@
           for (let i = 0; i < vehicleList.length; i++) {
             const v = vehicleList[i];
             vehicleDetailsXml +=
+              `<VehicleDetails>` +
               `<VehicleID>${i + 1}</VehicleID>` +
               `<Manufacturer>${v.manufacturer || ""}</Manufacturer>` +
               `<VehicleMakeModel>${v.model || ""}</VehicleMakeModel>` +
               `<TotalRequestedAmount>${v.amount || ""}</TotalRequestedAmount>` +
-              `<Action>${v.status || ""}</Action>`;
+              `<Action>${v.status || ""}</Action>` +
+              `</VehicleDetails>`;
           }
           const extraAttributesXml =
             `<ApplicationId>${app.appId || "APP-DRAFT"}</ApplicationId>` +
-            `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
+            `<Q_Basic_Details_Source>Portal</Q_Basic_Details_Source>` +
             `<VATNumber>${app.financials?.vatn || "IE9876543B"}</VATNumber>` +
-            `<CRONumber>${app.financials?.cron || "543210"}</CRONumber>` +
             `<ContactName>${app.contactPerson?.name || ""}</ContactName>` +
             `<ContactEmail>${app.contactPerson?.email || ""}</ContactEmail>` +
             `<ContactMobile>${app.contactPerson?.mobile || ""}</ContactMobile>` +
@@ -7597,6 +7598,17 @@
             `<Q_Applicant_Details>` +
             `<customer_type>Non Individual</customer_type>` +
             `<customer_name>${app.entityDetails?.name || "Kellner Logistics Ltd"}</customer_name>` +
+            `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
+            `<CRO>${app.financials?.cron || "543210"}</CRO>` +
+            `<Relationship>Borrower</Relationship>` +
+            `<Address_Details_ListView>` +
+            `<AddressType>Registered</AddressType>` +
+            `<AddressId>1</AddressId>` +
+            `<AddressLine1>${app.entityDetails?.addressLine1 || "Unit 12, Parkwest Business Park"}</AddressLine1>` +
+            `<City>${app.entityDetails?.city || "Dublin"}</City>` +
+            `<County>${app.entityDetails?.county || "Dublin 12"}</County>` +
+            `<Eircode>${app.entityDetails?.eircode || "D12 KF89"}</Eircode>` +
+            `</Address_Details_ListView>` +
             `</Q_Applicant_Details>`;
 
           try {
