@@ -7571,15 +7571,19 @@
 
           // Build extraAttributesXml — placed inside <Attributes> by WorkitemService
           const app = state.application;
-          const vehicles = (app.vehicles || [])
-            .map(
-              (v, i) =>
-                `<Vehicle index="${i + 1}"><Status>${v.status || ""}</Status><Category>${v.category || ""}</Category><Manufacturer>${v.manufacturer || ""}</Manufacturer><Model>${v.model || ""}</Model><Units>${v.units || 1}</Units><Year>${v.year || ""}</Year></Vehicle>`,
-            )
-            .join("");
+          let vehicleDetailsXml = "";
+          const vehicleList = app.vehicles || [];
+          for (let i = 0; i < vehicleList.length; i++) {
+            const v = vehicleList[i];
+            vehicleDetailsXml +=
+              `<VehicleID>${i + 1}</VehicleID>` +
+              `<Manufacturer>${v.manufacturer || ""}</Manufacturer>` +
+              `<VehicleMakeModel>${v.model || ""}</VehicleMakeModel>` +
+              `<TotalRequestedAmount>${v.amount || ""}</TotalRequestedAmount>` +
+              `<Action>${v.status || ""}</Action>`;
+          }
           const extraAttributesXml =
             `<ApplicationId>${app.appId || "APP-DRAFT"}</ApplicationId>` +
-            `<EntityName>${app.entityDetails?.name || "Kellner Logistics Ltd"}</EntityName>` +
             `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
             `<VATNumber>${app.financials?.vatn || "IE9876543B"}</VATNumber>` +
             `<CRONumber>${app.financials?.cron || "543210"}</CRONumber>` +
@@ -7587,10 +7591,13 @@
             `<ContactEmail>${app.contactPerson?.email || ""}</ContactEmail>` +
             `<ContactMobile>${app.contactPerson?.mobile || ""}</ContactMobile>` +
             `<VehicleCount>${(app.vehicles || []).length}</VehicleCount>` +
-            `<Vehicles>${vehicles}</Vehicles>` +
+            `<Q_Borrower_NewLoans_Vechile_Details_table>${vehicleDetailsXml}</Q_Borrower_NewLoans_Vechile_Details_table>` +
             `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>` +
             `<LOCALE>en_IR</LOCALE>` +
-            `<Q_Basic_Details_Source>Portal</Q_Basic_Details_Source>`;
+            `<Q_Applicant_Details>` +
+            `<customer_type>Non Individual</customer_type>` +
+            `<customer_name>${app.entityDetails?.name || "Kellner Logistics Ltd"}</customer_name>` +
+            `</Q_Applicant_Details>`;
 
           try {
             // ── Print full input XML before sending ──
