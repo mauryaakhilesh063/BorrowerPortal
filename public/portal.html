@@ -7586,13 +7586,13 @@
           }
           const extraAttributesXml =
             `<ApplicationId>${app.appId || "APP-DRAFT"}</ApplicationId>` +
-            `<Q_Basic_Details_Source>Portal</Q_Basic_Details_Source>` +
+            `<Basic_Source>Portal</Basic_Source>` +
             `<VATNumber>${app.financials?.vatn || "IE9876543B"}</VATNumber>` +
             `<ContactName>${app.contactPerson?.name || ""}</ContactName>` +
             `<ContactEmail>${app.contactPerson?.email || ""}</ContactEmail>` +
             `<ContactMobile>${app.contactPerson?.mobile || ""}</ContactMobile>` +
             `<VehicleCount>${(app.vehicles || []).length}</VehicleCount>` +
-            `<Q_Borrower_NewLoans_Vechile_Details_table>${vehicleDetailsXml}</Q_Borrower_NewLoans_Vechile_Details_table>` +
+            `<Vechile_Details_table>${vehicleDetailsXml}</Vechile_Details_table>` +
             `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>` +
             `<LOCALE>en_IR</LOCALE>` +
             `<Q_Applicant_Details>` +
@@ -7602,12 +7602,12 @@
             `<CRO>${app.financials?.cron || "543210"}</CRO>` +
             `<Relationship>Borrower</Relationship>` +
             `<Address_Details_ListView>` +
-            `<AddressType>Registered</AddressType>` +
-            `<AddressId>1</AddressId>` +
-            `<AddressLine1>${app.entityDetails?.addressLine1 || "Unit 12, Parkwest Business Park"}</AddressLine1>` +
+            `<address_type>Registered Office Address</address_type>` +
+            `<Address_Id>1</Address_Id>` +
+            `<Address_Line_1>${app.entityDetails?.addressLine1 || "Unit 12, Parkwest Business Park"}</Address_Line_1>` +
             `<City>${app.entityDetails?.city || "Dublin"}</City>` +
-            `<County>${app.entityDetails?.county || "Dublin 12"}</County>` +
-            `<Eircode>${app.entityDetails?.eircode || "D12 KF89"}</Eircode>` +
+            `<state_county>${app.entityDetails?.county || "Dublin 12"}</state_county>` +
+            `<pin_zip_code>${app.entityDetails?.eircode || "D12 KF89"}</pin_zip_code>` +
             `</Address_Details_ListView>` +
             `</Q_Applicant_Details>`;
 
