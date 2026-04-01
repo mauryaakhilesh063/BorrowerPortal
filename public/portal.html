@@ -5854,7 +5854,7 @@
 
       // ─── APP STEP 3: CUSTOMER DETAILS (NEW MILESTONE) ────────────────────────────
       function CustomerDetailsScreen({ navigate }) {
-        const { state, addToast } = useContext(AppCtx);
+        const { state, dispatch, addToast } = useContext(AppCtx);
         const ed = state.application.entityDetails || {};
         const cp = state.application.contactPerson || {};
 
@@ -5865,7 +5865,7 @@
           cro: "",
           vatNo: "",
           incorporationDate: "",
-          industry: "Transport & Logistics",
+          industry: "WATER TRANSPORT",
           website: "",
         });
         // Address Details state
@@ -5994,7 +5994,7 @@
                         legalName: "Kellner Logistics Ltd",
                         constitution: "Private Limited Company",
                         incorporationDate: "2015-03-15",
-                        industry: "Transport & Logistics",
+                        industry: "WATER TRANSPORT",
                       }));
                       setAddress((a) => ({
                         ...a,
@@ -6099,14 +6099,46 @@
                       onChange={updE("industry")}
                     >
                       {[
-                        "Transport & Logistics",
-                        "Construction",
-                        "Healthcare",
-                        "Retail & Trade",
-                        "Technology",
-                        "Agriculture",
-                        "Manufacturing",
-                        "Other",
+                        "WATER TRANSPORT",
+                        "AGRICULTURE - INDIRECT",
+                        "AGRICULTURE - OTHER ACTIVITIES",
+                        "AIR TRANSPORT",
+                        "ALCOHOLIC & NON-ALCOHOLIC BEVERAGES",
+                        "ALLIED ACTIVITIES",
+                        "ANCILLARY UNITS",
+                        "ARTISANS AND HANDICRAFTS",
+                        "BASIC METALS - FERROUS",
+                        "BASIC METALS - NON FERROUS",
+                        "CEMENT & CEMENT PRODUCTS",
+                        "CHEMICALS",
+                        "CONSTRUCTION & INFRASTRUCTURE - PRIORITY",
+                        "ELECTRIC PRODUCTS",
+                        "ELECTRONIC PRODUCTS",
+                        "FINANCE & DEVELOPMENT BOARDS",
+                        "GENERATION & DISTRIBUTION OF ELECTRICITY",
+                        "GLASSGLASS PRODUCTS & CERAMICS",
+                        "HEAVY ENGINEERING",
+                        "HOUSING LOANS - INDIRECT",
+                        "LEATHER & LEATHER PRODUCTS",
+                        "LIGHT ENGINEERING",
+                        "MANUFACTURING - OTHER ACTIVITIES",
+                        "MINING",
+                        "MISCELLANEOUS ACTIVITIES",
+                        "NATURALSYNTHETIC TEXTILES",
+                        "PAPER & PAPER PRODUCTS",
+                        "PETROLEUM PRODUCTS",
+                        "PLASTIC PRODUCTS",
+                        "PROCESSING OF FOOD ITEMS",
+                        "ROAD TRANSPORT",
+                        "RUBBER & RUBBER PRODUCTS",
+                        "SERVICES",
+                        "STORAGE & MARKET YARDS",
+                        "TOBACCO & TOBACCO PRODUCTS",
+                        "TRADING",
+                        "VEHICLES",
+                        "WOOD PRODUCTS",
+                        "NBFC",
+                        "CRE",
                       ].map((o) => (
                         <option key={o}>{o}</option>
                       ))}
@@ -6625,7 +6657,24 @@
                 </button>
                 <button
                   className="btn btn-primary"
-                  onClick={() => navigate("app_new/4")}
+                  onClick={() => {
+                    dispatch({
+                      type: "SET_APP",
+                      payload: {
+                        entityDetails: {
+                          ...state.application.entityDetails,
+                          incorporationDate: entity.incorporationDate,
+                          industry: entity.industry,
+                          addressLine1: address.regLine1,
+                          addressLine2: address.regLine2,
+                          city: address.regCity,
+                          county: address.regCounty,
+                          eircode: address.regEircode,
+                        },
+                      },
+                    });
+                    navigate("app_new/4");
+                  }}
                 >
                   Next: Loan Info →
                 </button>
@@ -7604,6 +7653,7 @@
             `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
             `<CRO>${app.financials?.cron || "543210"}</CRO>` +
             `<Relationship>Borrower</Relationship>` +
+            `<Industry>${app.entityDetails?.industry || "WATER TRANSPORT"}</Industry>` +
             `<Address_Details_ListView>` +
             `<address_type>Registered Office Address</address_type>` +
             `<Address_Id>1</Address_Id>` +
