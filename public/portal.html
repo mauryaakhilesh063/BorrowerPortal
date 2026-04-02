@@ -7625,13 +7625,11 @@
           for (let i = 0; i < vehicleList.length; i++) {
             const v = vehicleList[i];
             vehicleDetailsXml +=
-              `<VehicleDetails>` +
               `<VehicleID>${i + 1}</VehicleID>` +
               `<Manufacturer>${v.manufacturer || ""}</Manufacturer>` +
               `<VehicleMakeModel>${v.model || ""}</VehicleMakeModel>` +
               `<TotalRequestedAmount>${v.amount || ""}</TotalRequestedAmount>` +
-              `<Action>${v.status || ""}</Action>` +
-              `</VehicleDetails>`;
+              `<Action>${v.status || ""}</Action>`;
           }
           const extraAttributesXml =
             `<ApplicationId>${app.appId || "APP-DRAFT"}</ApplicationId>` +
