@@ -7625,20 +7625,16 @@
           for (let i = 0; i < vehicleList.length; i++) {
             const v = vehicleList[i];
             vehicleDetailsXml +=
+              `<Vechile_Details_table>` +
               `<VehicleID>${i + 1}</VehicleID>` +
               `<Manufacturer>${v.manufacturer || ""}</Manufacturer>` +
               `<VehicleMakeModel>${v.model || ""}</VehicleMakeModel>` +
               `<TotalRequestedAmount>${v.amount || ""}</TotalRequestedAmount>` +
-              `<Action>${v.status || ""}</Action>`;
+              `<Action>${v.status || ""}</Action>` +
+              `</Vechile_Details_table>`;
           }
           const extraAttributesXml =
-            `<ApplicationId>${app.appId || "APP-DRAFT"}</ApplicationId>` +
-            `<VATNumber>${app.financials?.vatn || "IE9876543B"}</VATNumber>` +
-            `<ContactName>${app.contactPerson?.name || ""}</ContactName>` +
-            `<ContactEmail>${app.contactPerson?.email || ""}</ContactEmail>` +
-            `<ContactMobile>${app.contactPerson?.mobile || ""}</ContactMobile>` +
-            `<VehicleCount>${(app.vehicles || []).length}</VehicleCount>` +
-            `<Vechile_Details_table>${vehicleDetailsXml}</Vechile_Details_table>` +
+            `${vehicleDetailsXml}` +
             `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>` +
             `<LOCALE>en_IR</LOCALE>` +
             `<Q_Basic_Details>` +
@@ -7646,6 +7642,7 @@
             `<Application_Receipt_Date>${app.entityDetails?.incorporationDate || ""}</Application_Receipt_Date>` +
             `</Q_Basic_Details>` +
             `<Q_Applicant_Details>` +
+            `<relationship_status>New</relationship_status>` +
             `<customer_type>Non Individual</customer_type>` +
             `<customer_name>${app.entityDetails?.name || "Kellner Logistics Ltd"}</customer_name>` +
             `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
@@ -7658,6 +7655,7 @@
             `<Address_Line_1>${app.entityDetails?.addressLine1 || "Unit 12, Parkwest Business Park"}</Address_Line_1>` +
             `<Address_Line_2>${app.entityDetails?.addressLine2 || ""}</Address_Line_2>` +
             `<City>${app.entityDetails?.city || "Dublin"}</City>` +
+            `<country_name>IRE</country_name>` +
             `<state_county>${app.entityDetails?.county || "Dublin 12"}</state_county>` +
             `<pin_zip_code>${app.entityDetails?.eircode || "D12 KF89"}</pin_zip_code>` +
             `</Address_Details_ListView>` +
