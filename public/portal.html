@@ -1748,7 +1748,7 @@
       const MOCK_APPS = [
         {
           id: "APP-2024-00412",
-          entity: "Kellner Logistics Ltd",
+          entity: "Kellner Logistics Private Limited",
           vehicles: 8,
           product: "BCH",
           status: "pending_submission",
@@ -1764,7 +1764,7 @@
         },
         {
           id: "APP-2024-00355",
-          entity: "Kellner Logistics Ltd",
+          entity: "Kellner Logistics Private Limited",
           vehicles: 12,
           product: "Business Leasing",
           status: "query_raised",
@@ -1772,7 +1772,7 @@
         },
         {
           id: "APP-2024-00301",
-          entity: "Kellner Logistics Ltd",
+          entity: "Kellner Logistics Private Limited",
           vehicles: 5,
           product: "BCH",
           status: "approved",
@@ -1809,7 +1809,7 @@
           appId: "",
           status: "draft",
           entityDetails: {
-            name: "Kellner Logistics Ltd",
+            name: "Kellner Logistics Private Limited",
             constitution: "Private Limited Company",
           },
           contactPerson: {
@@ -2504,7 +2504,7 @@
                         className="form-control"
                         value={form.entityName}
                         onChange={upd("entityName")}
-                        placeholder="e.g. Kellner Logistics Ltd"
+                        placeholder="e.g. Kellner Logistics Private Limited"
                         style={{
                           padding: "14px 16px",
                           fontSize: 14,
@@ -3020,10 +3020,10 @@
       // ─── DASHBOARD ────────────────────────────────────────────────────────────────
       function DashboardScreen({ navigate }) {
         const summaries = [
-          { v: "4", l: "Total Applications", i: "📋" },
-          { v: "2", l: "Pending Dealer Quotes", i: "🚗" },
-          { v: "1", l: "Awaiting Documents", i: "📄" },
-          { v: "1", l: "Pending eSign", i: "✍️" },
+          { v: "1", l: "Total Applications", i: "📋" },
+          { v: "0", l: "Pending Dealer Quotes", i: "🚗" },
+          { v: "0", l: "Awaiting Documents", i: "📄" },
+          { v: "0", l: "Pending eSign", i: "✍️" },
         ];
         return (
           <div className="page-body">
@@ -4354,7 +4354,9 @@
                                 <span style={{ color: "var(--muted)" }}>
                                   Entity Name:
                                 </span>{" "}
-                                <strong>Kellner Logistics Ltd</strong>
+                                <strong>
+                                  Kellner Logistics Private Limited
+                                </strong>
                               </div>
                               <div>
                                 <span style={{ color: "var(--muted)" }}>
@@ -4807,7 +4809,7 @@
         <div class="section">
           <div class="section-title">Customer Details</div>
           <div class="info-box">
-            <p><strong>Entity Name:</strong> Kellner Logistics Ltd</p>
+            <p><strong>Entity Name:</strong> Kellner Logistics Private Limited</p>
             <p><strong>CRO Number:</strong> 543210</p>
             <p><strong>Contact Person:</strong> Aoife Brennan</p>
           </div>
@@ -5991,7 +5993,7 @@
                       // Simulate CRO API lookup - in production, this would call the actual CRO API
                       setEntity((e) => ({
                         ...e,
-                        legalName: "Kellner Logistics Ltd",
+                        legalName: "Kellner Logistics Private Limited",
                         constitution: "Private Limited Company",
                         incorporationDate: "2015-03-15",
                         industry: "WATER TRANSPORT",
@@ -7645,7 +7647,7 @@
             `<relationship_status>New</relationship_status>` +
             `<customer_type>Non Individual</customer_type>` +
             `<incor_form_date>2018-06-20</incr_form_date>` +
-            `<customer_name>${app.entityDetails?.name || "Kellner Logistics Ltd"}</customer_name>` +
+            `<customer_name>${app.entityDetails?.name || "Kellner Logistics Private Limited"}</customer_name>` +
             `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
             `<CRO>${app.financials?.cron || "543210"}</CRO>` +
             `<Relationship>Borrower</Relationship>` +
@@ -7870,7 +7872,7 @@
                 {kv(
                   "Entity Name",
                   state.application.entityDetails?.name ||
-                    "Kellner Logistics Ltd",
+                    "Kellner Logistics Private Limited",
                 )}
                 {kv("Constitution", "Private Limited Company")}
                 {kv("VAT Number", "IE9876543B")}
@@ -8718,9 +8720,9 @@
                       <strong>Capital Flow Ireland DAC</strong> ("the Finance
                       Company"), a duly authorised Non-Bank Financial
                       Institution operating under Irish law, and{" "}
-                      <strong>Kellner Logistics Limited</strong>, a company
-                      incorporated in Ireland under registration number 543210
-                      ("the Hirer").
+                      <strong>Kellner Logistics Private Limited</strong>, a
+                      company incorporated in Ireland under registration number
+                      543210 ("the Hirer").
                     </p>
                     <p style={{ marginBottom: 12 }}>
                       1. <strong>HIRED VEHICLES.</strong> The Finance Company
@@ -9109,14 +9111,14 @@
               requestType: "Insurance Documentation",
               dateUploaded: "13/03/2025",
               comments: "Comprehensive coverage valid until Dec 2025",
-              uploadedBy: "Kellner Logistics Ltd",
+              uploadedBy: "Kellner Logistics Private Limited",
             },
             {
               name: "Director Resolution - Fleet Purchase.pdf",
               requestType: "Corporate Resolution",
               dateUploaded: "15/03/2025",
               comments: "Board resolution authorizing fleet acquisition",
-              uploadedBy: "Kellner Logistics Ltd",
+              uploadedBy: "Kellner Logistics Private Limited",
             },
           ],
           "LOAN-002": [
