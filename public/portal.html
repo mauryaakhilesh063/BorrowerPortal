@@ -11094,7 +11094,10 @@
             3500,
           );
         }, []);
-        const navigate = useCallback((p) => setPage(p), []);
+        const navigate = useCallback((p) => {
+          setPage(p);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, []);
         const ctx = { state, dispatch, addToast };
         const noAuth = ["login", "kyc"].includes(page);
         const pageTitles = {
