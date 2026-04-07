@@ -3586,9 +3586,12 @@
         const [quoteStates, setQuoteStates] = useState({});
         const [quoteAmounts, setQuoteAmounts] = useState({});
         const [selected, setSelected] = useState({});
-        const [dealerPopup, setDealerPopup] = useState(null); // 'assisted' | 'reject' | null, with dealerInfo
+        const [dealerPopup, setDealerPopup] = useState(null);
         const [rejectRemarks, setRejectRemarks] = useState("");
-        const [actionSelections, setActionSelections] = useState({}); // per-dealer selected action
+        const [actionSelections, setActionSelections] = useState({});
+        const [lsQuoteAmount, setLsQuoteAmount] = useState(
+          () => window.localStorage.getItem("totalVehicleLoanAmount") || "",
+        );
 
         const vUpd = (k) => (e) =>
           setVForm((f) => ({ ...f, [k]: e.target.value }));
@@ -3622,6 +3625,17 @@
             dispatch({ type: "SET_APP", payload: { resuming: false } });
           }
         }, []);
+
+        // Listen for localStorage changes from other tabs/portals
+        useEffect(() => {
+          const onStorage = (e) => {
+            if (e.key === "totalVehicleLoanAmount") {
+              setLsQuoteAmount(e.newValue || "");
+            }
+          };
+          window.addEventListener("storage", onStorage);
+          return () => window.removeEventListener("storage", onStorage);
+        }, []);
         const sendQuote = (id) => {
           setQuoteStates((q) => ({ ...q, [id]: "sent" }));
           addToast("Quote request sent to dealer", "success");
@@ -3636,11 +3650,18 @@
           6: 600,
         };
         const receiveQuote = (id) => {
+          // Always read fresh from localStorage at click time
+          const raw = window.localStorage.getItem("totalVehicleLoanAmount");
+          console.log(
+            "Received quote with base amount from localStorage:",
+            raw,
+          );
+          const parsed = raw !== null ? Number(raw) : NaN;
+          const baseAmount =
+            !isNaN(parsed) && parsed > 0 ? parsed : totalQuoteAmount || 42800;
+          setLsQuoteAmount(raw || "");
           setQuoteStates((q) => ({ ...q, [id]: "received" }));
-          setQuoteAmounts((a) => ({
-            ...a,
-            [id]: (totalQuoteAmount || 42800) + (dealerQuoteVariation[id] || 0),
-          }));
+          setQuoteAmounts((a) => ({ ...a, [id]: baseAmount }));
         };
         const acceptQuote = (id) => {
           setQuoteStates((q) => ({ ...q, [id]: "accepted" }));
@@ -4031,6 +4052,33 @@
             <div className="card" style={{ marginBottom: 16 }}>
               <div className="card-header">
                 <div className="card-title">Part C — Dealer Discovery</div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontSize: 12.5,
+                  }}
+                >
+                  <span style={{ color: "var(--muted)" }}>
+                    Quote Amount (localStorage):
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "DM Mono,monospace",
+                      fontWeight: 600,
+                      color: lsQuoteAmount ? "var(--success)" : "var(--danger)",
+                      background: lsQuoteAmount ? "#f0fdf4" : "#fef2f2",
+                      border: `1px solid ${lsQuoteAmount ? "#bbf7d0" : "#fecaca"}`,
+                      borderRadius: 6,
+                      padding: "2px 8px",
+                    }}
+                  >
+                    {lsQuoteAmount
+                      ? `€${Number(lsQuoteAmount).toLocaleString("en-IE")}`
+                      : "Not set"}
+                  </span>
+                </div>
               </div>
               <div className="card-body">
                 <div
