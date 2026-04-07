@@ -2532,10 +2532,20 @@
           ppsn: "",
           email: "",
           mobile: "",
+          proposedEmail: "",
+          ppsnEmail: "",
         });
         const [verifying, setVerifying] = useState(false);
         const [verified, setVerified] = useState(false);
         const [errors, setErrors] = useState({});
+        const [showGovModal, setShowGovModal] = useState(false);
+        const [govPassword, setGovPassword] = useState("");
+        const [govConfirming, setGovConfirming] = useState(false);
+        const [modalStep, setModalStep] = useState(1); // 1=sign-in, 2=2FA, 3=OTP
+        const [generatedOtp, setGeneratedOtp] = useState("");
+        const [otp, setOtp] = useState("");
+        const [otpError, setOtpError] = useState("");
+        const [codeSent, setCodeSent] = useState(false);
         const upd = (k) => (e) =>
           setForm((f) => ({ ...f, [k]: e.target.value }));
         const validate = () => {
@@ -2547,30 +2557,429 @@
         };
         const verifyMyGov = () => {
           if (!validate()) return;
+          setModalStep(1);
+          setGovPassword("");
+          setOtp("");
+          setOtpError("");
+          setCodeSent(false);
+          setShowGovModal(true);
+        };
 
-          // For demo/testing: simulate mygovID verification
-          // In production, this would redirect to: https://account.mygovid.ie/...
-          setVerifying(true);
-
-          // Simulate mygovID verification flow
+        const confirmIdentity = () => {
+          setGovConfirming(true);
           setTimeout(() => {
-            setVerifying(false);
-            setVerified(true);
-            dispatch({
-              type: "SET_AUTH",
-              payload: {
-                kycStatus: { identity: true, mobile: true, auth: true },
-              },
-            });
-            addToast("MyGovID verification successful", "success");
-          }, 2200);
+            setGovConfirming(false);
+            setModalStep(2);
+          }, 1200);
+        };
 
-          // PRODUCTION CODE (uncomment when deploying):
-          // window.open('https://account.mygovid.ie/e197ea9e-02e5-4cb6-96b2-5571cd645754/b2c_1a_mygovid_signin-v5-live/oauth2/v2.0/authorize', '_blank');
+        const sendCode = () => {
+          const code = String(Math.floor(100000 + Math.random() * 900000));
+          setGeneratedOtp(code);
+          setCodeSent(true);
+          setModalStep(3);
+          setOtp("");
+          setOtpError("");
+          addToast(`OTP sent: ${code}`, "info");
+        };
+
+        const verifyOtp = () => {
+          dispatch({
+            type: "SET_AUTH",
+            payload: {
+              kycStatus: { identity: true, mobile: true, auth: true },
+              isAuthenticated: true,
+              customerType: "new",
+            },
+          });
+          setShowGovModal(false);
+          setVerified(true);
+          addToast("MyGovID verification successful", "success");
+          navigate("dashboard");
         };
 
         return (
           <div className="auth-layout">
+            {/* ── MyGovID Modal ── */}
+            {showGovModal && (
+              <div className="modal-overlay" style={{ zIndex: 200 }}>
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: 12,
+                    width: "100%",
+                    maxWidth: 360,
+                    overflow: "hidden",
+                    boxShadow: "0 24px 80px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  {/* Blue header */}
+                  <div
+                    style={{
+                      background: "#1a73e8",
+                      padding: "18px 24px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 10 }}
+                    >
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          border: "2px solid rgba(255,255,255,0.7)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#fff",
+                          fontSize: 16,
+                        }}
+                      >
+                        🛡
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            color: "#fff",
+                            fontWeight: 700,
+                            fontSize: 15,
+                          }}
+                        >
+                          MyGovID
+                        </div>
+                        <div
+                          style={{
+                            color: "rgba(255,255,255,0.8)",
+                            fontSize: 11,
+                          }}
+                        >
+                          Official Government Identity Service
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        background: "rgba(255,255,255,0.2)",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: "1px",
+                        padding: "3px 8px",
+                        borderRadius: 4,
+                      }}
+                    >
+                      SECURE SESSION
+                    </div>
+                  </div>
+
+                  {/* Body */}
+                  <div style={{ padding: "28px 28px 20px" }}>
+                    {/* STEP 1: Sign In */}
+                    {modalStep === 1 && (
+                      <>
+                        <h3
+                          style={{
+                            textAlign: "center",
+                            fontSize: 18,
+                            fontWeight: 700,
+                            marginBottom: 4,
+                            color: "#111",
+                          }}
+                        >
+                          Sign In to Verify
+                        </h3>
+                        <p
+                          style={{
+                            textAlign: "center",
+                            fontSize: 13,
+                            color: "#555",
+                            marginBottom: 20,
+                          }}
+                        >
+                          Verifying PPSN:{" "}
+                          <span
+                            style={{
+                              color: "#1a73e8",
+                              fontWeight: 600,
+                              fontFamily: "DM Mono,monospace",
+                            }}
+                          >
+                            {form.ppsn.toUpperCase() || "1234567TW"}
+                          </span>
+                        </p>
+                        <div
+                          className="form-group"
+                          style={{ marginBottom: 14 }}
+                        >
+                          <label className="form-label">
+                            PPSN Email Address
+                          </label>
+                          <input
+                            className="form-control"
+                            type="email"
+                            value={form.ppsnEmail || "ppsn@gmail.com"}
+                            readOnly
+                            style={{ background: "#f1f5f9", color: "#374151" }}
+                          />
+                        </div>
+                        <div
+                          className="form-group"
+                          style={{ marginBottom: 20 }}
+                        >
+                          <label className="form-label">Password</label>
+                          <input
+                            className="form-control"
+                            type="password"
+                            value={govPassword}
+                            onChange={(e) => setGovPassword(e.target.value)}
+                            placeholder="Enter any password to proceed"
+                          />
+                        </div>
+                        <button
+                          className="btn btn-lg"
+                          style={{
+                            width: "100%",
+                            background: "#1a73e8",
+                            color: "#fff",
+                            fontWeight: 600,
+                            fontSize: 15,
+                            marginBottom: 12,
+                          }}
+                          onClick={confirmIdentity}
+                          disabled={govConfirming}
+                        >
+                          {govConfirming ? (
+                            <>
+                              <Spinner /> Verifying...
+                            </>
+                          ) : (
+                            "Confirm Identity"
+                          )}
+                        </button>
+                        <div style={{ textAlign: "center" }}>
+                          <button
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#555",
+                              fontSize: 13,
+                              cursor: "pointer",
+                              textDecoration: "underline",
+                            }}
+                            onClick={() => {
+                              setShowGovModal(false);
+                              setGovPassword("");
+                            }}
+                          >
+                            Cancel and Return
+                          </button>
+                        </div>
+                      </>
+                    )}
+
+                    {/* STEP 2: Two-Factor Authentication */}
+                    {modalStep === 2 && (
+                      <>
+                        <div style={{ textAlign: "center", marginBottom: 20 }}>
+                          <div
+                            style={{
+                              width: 64,
+                              height: 64,
+                              borderRadius: "50%",
+                              background: "#eef2ff",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 28,
+                              margin: "0 auto 16px",
+                            }}
+                          >
+                            📱
+                          </div>
+                          <h3
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              color: "#111",
+                              marginBottom: 8,
+                            }}
+                          >
+                            Two-Factor Authentication
+                          </h3>
+                          <p
+                            style={{
+                              fontSize: 13,
+                              color: "#555",
+                              lineHeight: 1.6,
+                            }}
+                          >
+                            A verification code will be sent to your registered
+                            mobile number ending in <strong>****4567</strong>
+                          </p>
+                        </div>
+                        <button
+                          className="btn btn-lg"
+                          style={{
+                            width: "100%",
+                            background: "#1a73e8",
+                            color: "#fff",
+                            fontWeight: 600,
+                            fontSize: 15,
+                            marginBottom: 12,
+                          }}
+                          onClick={sendCode}
+                        >
+                          Send Verification Code →
+                        </button>
+                        <div style={{ textAlign: "center" }}>
+                          <button
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#555",
+                              fontSize: 13,
+                              cursor: "pointer",
+                              textDecoration: "underline",
+                            }}
+                            onClick={() => {
+                              setShowGovModal(false);
+                              setGovPassword("");
+                              setModalStep(1);
+                            }}
+                          >
+                            Cancel and Return
+                          </button>
+                        </div>
+                      </>
+                    )}
+
+                    {/* STEP 3: OTP Entry */}
+                    {modalStep === 3 && (
+                      <>
+                        <div style={{ textAlign: "center", marginBottom: 20 }}>
+                          <div
+                            style={{
+                              width: 64,
+                              height: 64,
+                              borderRadius: "50%",
+                              background: "#eef2ff",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 28,
+                              margin: "0 auto 16px",
+                            }}
+                          >
+                            🔢
+                          </div>
+                          <h3
+                            style={{
+                              fontSize: 18,
+                              fontWeight: 700,
+                              color: "#111",
+                              marginBottom: 8,
+                            }}
+                          >
+                            Enter Verification Code
+                          </h3>
+                          <p
+                            style={{
+                              fontSize: 13,
+                              color: "#555",
+                              lineHeight: 1.6,
+                            }}
+                          >
+                            A 6-digit code has been sent to{" "}
+                            <strong>****4567</strong>
+                          </p>
+                        </div>
+                        <div className="form-group" style={{ marginBottom: 8 }}>
+                          <label className="form-label">
+                            One-Time Password (OTP)
+                          </label>
+                          <input
+                            className={`form-control${otpError ? " error" : ""}`}
+                            type="text"
+                            maxLength={6}
+                            value={otp}
+                            onChange={(e) => {
+                              setOtp(e.target.value.replace(/\D/g, ""));
+                              setOtpError("");
+                            }}
+                            placeholder="Enter 6-digit code"
+                            style={{
+                              fontFamily: "DM Mono,monospace",
+                              fontSize: 20,
+                              letterSpacing: 6,
+                              textAlign: "center",
+                            }}
+                          />
+                          {otpError && (
+                            <div
+                              className="form-error"
+                              style={{ marginTop: 4 }}
+                            >
+                              ⚠ {otpError}
+                            </div>
+                          )}
+                        </div>
+                        <div className="form-hint" style={{ marginBottom: 16 }}>
+                          Check your toast notification for the OTP code.
+                        </div>
+                        <button
+                          className="btn btn-lg"
+                          style={{
+                            width: "100%",
+                            background: "#1a73e8",
+                            color: "#fff",
+                            fontWeight: 600,
+                            fontSize: 15,
+                            marginBottom: 12,
+                          }}
+                          onClick={verifyOtp}
+                          disabled={otp.length !== 6}
+                        >
+                          Verify & Continue →
+                        </button>
+                        <div style={{ textAlign: "center" }}>
+                          <button
+                            style={{
+                              background: "none",
+                              border: "none",
+                              color: "#1a73e8",
+                              fontSize: 13,
+                              cursor: "pointer",
+                              textDecoration: "underline",
+                            }}
+                            onClick={sendCode}
+                          >
+                            Resend Code
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      fontSize: 10,
+                      color: "#999",
+                      letterSpacing: "0.8px",
+                      padding: "10px 24px 16px",
+                      borderTop: "1px solid #f0f0f0",
+                    }}
+                  >
+                    DEPARTMENT OF SOCIAL PROTECTION • IRELAND
+                  </div>
+                </div>
+              </div>
+            )}
             <div
               style={{
                 background: "#fff",
@@ -2687,14 +3096,41 @@
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">
-                    Email Address <span className="req">✱</span>
+                  <label
+                    className="form-label"
+                    style={{ display: "flex", alignItems: "center", gap: 6 }}
+                  >
+                    Proposed Email Address for communication with Capital Flow{" "}
+                    <span className="req">✱</span>
+                    <span
+                      title="All official correspondence from Capital Flow will be sent to this email address."
+                      style={{
+                        cursor: "help",
+                        color: "var(--muted)",
+                        fontSize: 13,
+                      }}
+                    >
+                      ⓘ
+                    </span>
                   </label>
                   <input
                     className="form-control"
                     type="email"
-                    value={form.email}
-                    onChange={upd("email")}
+                    value={form.proposedEmail}
+                    onChange={upd("proposedEmail")}
+                    placeholder="aoife.brennan@example.ie"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    PPSN Email Address <span className="req">✱</span>
+                  </label>
+                  <input
+                    className="form-control"
+                    type="email"
+                    value={form.ppsnEmail}
+                    onChange={upd("ppsnEmail")}
+                    placeholder="ppsn@gmail.com"
                   />
                 </div>
 
