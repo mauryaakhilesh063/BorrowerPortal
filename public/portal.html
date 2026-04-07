@@ -1782,6 +1782,7 @@
           vehicles: [],
           dealers: [],
           directors: [],
+          resuming: false,
           financials: {
             turnover: "",
             profit: "",
@@ -2980,6 +2981,7 @@
 
       // ─── DASHBOARD ────────────────────────────────────────────────────────────────
       function DashboardScreen({ navigate }) {
+        const { dispatch } = useContext(AppCtx);
         const summaries = [
           { v: "1", l: "Total Applications", i: "📋" },
           { v: "0", l: "Pending Dealer Quotes", i: "🚗" },
@@ -3046,7 +3048,13 @@
                           {a.status === "pending_submission" && (
                             <button
                               className="btn btn-primary btn-sm"
-                              onClick={() => navigate("app_new")}
+                              onClick={() => {
+                                dispatch({
+                                  type: "SET_APP",
+                                  payload: { resuming: true },
+                                });
+                                navigate("app_new");
+                              }}
                             >
                               Resume →
                             </button>
@@ -3170,6 +3178,14 @@
           setDealers(DEALERS);
           setSearched(true);
         };
+
+        // Auto-populate dealers when resuming an application
+        useEffect(() => {
+          if (state.application.resuming) {
+            searchDealers();
+            dispatch({ type: "SET_APP", payload: { resuming: false } });
+          }
+        }, []);
         const sendQuote = (id) => {
           setQuoteStates((q) => ({ ...q, [id]: "sent" }));
           addToast("Quote request sent to dealer", "success");
@@ -11003,6 +11019,7 @@
 
       // ─── EXISTING APPS SCREEN (placeholder) ─────────────────────────────────────
       function ExistingAppsScreen({ navigate }) {
+        const { dispatch } = useContext(AppCtx);
         return (
           <div className="page-body">
             <div style={{ marginBottom: 20 }}>
@@ -11050,7 +11067,13 @@
                           {a.status === "pending_submission" && (
                             <button
                               className="btn btn-primary btn-sm"
-                              onClick={() => navigate("app_new")}
+                              onClick={() => {
+                                dispatch({
+                                  type: "SET_APP",
+                                  payload: { resuming: true },
+                                });
+                                navigate("app_new");
+                              }}
                             >
                               Resume →
                             </button>
