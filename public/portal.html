@@ -1781,6 +1781,7 @@
           },
           vehicles: [],
           dealers: [],
+          directors: [],
           financials: {
             turnover: "",
             profit: "",
@@ -6634,6 +6635,7 @@
                           county: address.regCounty,
                           eircode: address.regEircode,
                         },
+                        directors: directors,
                       },
                     });
                     navigate("app_new/4");
@@ -7600,6 +7602,7 @@
             `${vehicleDetailsXml}` +
             `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>` +
             `<LOCALE>en_IR</LOCALE>` +
+            `<Exist_New_Borrower>New</Exist_New_Borrower>` +
             `<Q_Basic_Details>` +
             `<Source>Portal</Source>` +
             `<Application_Receipt_Date>${app.entityDetails?.incorporationDate || ""}</Application_Receipt_Date>` +
@@ -7855,14 +7858,31 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td style={{ fontWeight: 500 }}>Aoife Brennan</td>
-                      <td>
-                        <span className="tag">Director</span>
-                      </td>
-                      <td style={{ fontWeight: 600 }}>60%</td>
-                      <td style={{ textAlign: "center" }}>✅</td>
-                    </tr>
+                    {(state.application.directors || []).length > 0 ? (
+                      (state.application.directors || []).map((d) => (
+                        <tr key={d.id}>
+                          <td style={{ fontWeight: 500 }}>{d.name}</td>
+                          <td>
+                            <span className="tag">{d.role}</span>
+                          </td>
+                          <td style={{ fontWeight: 600 }}>
+                            {d.sharePercent ? d.sharePercent + "%" : "—"}
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            {d.isAuthorisedSignatory ? "✅" : "—"}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          style={{ color: "var(--muted)", textAlign: "center" }}
+                        >
+                          No directors added.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </Section>
