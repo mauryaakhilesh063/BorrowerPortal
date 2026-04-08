@@ -1782,6 +1782,7 @@
           vehicles: [],
           dealers: [],
           directors: [],
+          loanRows: [],
           resuming: false,
           financials: {
             turnover: "",
@@ -7151,7 +7152,7 @@
 
       // ─── APP STEP 4: LOAN INFO (NEW MILESTONE) ────────────────────────────────────
       function LoanInfoScreen({ navigate }) {
-        const { addToast } = useContext(AppCtx);
+        const { dispatch, addToast } = useContext(AppCtx);
         const [fetched, setFetched] = useState(false);
         const [fetching, setFetching] = useState(true);
         // Bureau-populated rows — editable by user
@@ -7447,6 +7448,7 @@
                       addToast("Please fix validation errors", "error");
                       return;
                     }
+                    dispatch({ type: "SET_APP", payload: { loanRows: rows } });
                     navigate("app_new/5");
                   }}
                 >
@@ -8085,6 +8087,39 @@
 
           // Build extraAttributesXml — placed inside <Attributes> by WorkitemService
           const app = state.application;
+          const xe = (v) =>
+            String(v || "")
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+
+          const directors = app.directors || [];
+          let directorItems = "";
+          directors.forEach((d) => {
+            if (!d) return;
+            directorItems +=
+              `<Q_Applicant_Details>` +
+              `<relationship_status>New</relationship_status>` +
+              `<customer_type>Individual</customer_type>` +
+              `<customer_name>${xe(d.name)}</customer_name>` +
+              `<PPSN>${xe(d.ppsn)}</PPSN>` +
+              `</Q_Applicant_Details>`;
+          });
+
+          const loanRows = app.loanRows || [];
+          let loanItems = "";
+          loanRows.forEach((r) => {
+            if (!r) return;
+            loanItems +=
+              `<Q_LOAN_WITH_OTHER_BANK>` +
+              `<Bank_Name>${xe(r.bankName)}</Bank_Name>` +
+              `<Loan_Amt_Limit>${xe(r.loanAmount)}</Loan_Amt_Limit>` +
+              `<Outstanding_Amt>${xe(r.outstanding)}</Outstanding_Amt>` +
+              `<BANK_ADDRESS></BANK_ADDRESS>` +
+              `<NATURE_OF_FACILITY>Fund Based</NATURE_OF_FACILITY>` +
+              `</Q_LOAN_WITH_OTHER_BANK>`;
+          });
+
           let vehicleDetailsXml = "";
           const vehicleList = app.vehicles || [];
           for (let i = 0; i < vehicleList.length; i++) {
@@ -8132,7 +8167,9 @@
             `<state_county>${app.entityDetails?.county || "Dublin 12"}</state_county>` +
             `<pin_zip_code>${app.entityDetails?.eircode || "D12 KF89"}</pin_zip_code>` +
             `</Address_Details_ListView>` +
-            `</Q_Applicant_Details>`;
+            `</Q_Applicant_Details>` +
+            directorItems +
+            loanItems;
 
           try {
             // ── Print full input XML before sending ──
