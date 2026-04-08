@@ -5913,6 +5913,104 @@
                       </div>
                     ))}
                   </div>
+
+                  {/* Total Vehicle Cost & Proposed Finance Amount */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 20,
+                      marginTop: 8,
+                    }}
+                  >
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label
+                        className="form-label"
+                        style={{
+                          fontWeight: 600,
+                          fontSize: 12.5,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.4,
+                          color: "var(--muted)",
+                        }}
+                      >
+                        Total Vehicle Cost
+                      </label>
+                      <input
+                        className="form-control text-mono"
+                        readOnly
+                        value={(() => {
+                          const raw = window.localStorage.getItem(
+                            "totalVehicleLoanAmount",
+                          );
+                          const parsed = raw !== null ? Number(raw) : NaN;
+                          return !isNaN(parsed) && parsed > 0
+                            ? `€${parsed.toLocaleString("en-IE")}`
+                            : "Vehicle is not Initiated from Dealer Portal";
+                        })()}
+                        style={{
+                          background: "#f8fafc",
+                          color: (() => {
+                            const raw = window.localStorage.getItem(
+                              "totalVehicleLoanAmount",
+                            );
+                            const parsed = raw !== null ? Number(raw) : NaN;
+                            return !isNaN(parsed) && parsed > 0
+                              ? "var(--blue)"
+                              : "var(--muted)";
+                          })(),
+                          fontWeight: 600,
+                          cursor: "default",
+                        }}
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label
+                        className="form-label"
+                        style={{
+                          fontWeight: 600,
+                          fontSize: 12.5,
+                          textTransform: "uppercase",
+                          letterSpacing: 0.4,
+                          color: "var(--muted)",
+                        }}
+                      >
+                        Proposed Finance Amount
+                      </label>
+                      <input
+                        className="form-control text-mono"
+                        readOnly
+                        value={(() => {
+                          const raw = window.localStorage.getItem(
+                            "totalVehicleLoanAmount",
+                          );
+                          const parsed = raw !== null ? Number(raw) : NaN;
+                          if (!isNaN(parsed) && parsed > 0) {
+                            const proposed = Math.max(
+                              0,
+                              parsed - Math.round((parsed * deposit) / 100),
+                            );
+                            return `€${proposed.toLocaleString("en-IE")}`;
+                          }
+                          return "Vehicle is not Initiated from Dealer Portal";
+                        })()}
+                        style={{
+                          background: "#f8fafc",
+                          color: (() => {
+                            const raw = window.localStorage.getItem(
+                              "totalVehicleLoanAmount",
+                            );
+                            const parsed = raw !== null ? Number(raw) : NaN;
+                            return !isNaN(parsed) && parsed > 0
+                              ? "var(--blue)"
+                              : "var(--muted)";
+                          })(),
+                          fontWeight: 600,
+                          cursor: "default",
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
