@@ -8279,11 +8279,17 @@
           let directorItems = "";
           directors.forEach((d) => {
             if (!d) return;
+            const nameParts = (d.name || "").trim().split(/\s+/);
+            const firstName = xe(nameParts[0] || "");
+            const lastName = xe(nameParts.slice(1).join(" ") || "");
             directorItems +=
               `<Q_Applicant_Details>` +
               `<relationship_status>New</relationship_status>` +
               `<customer_type>Individual</customer_type>` +
               `<customer_name>${xe(d.name)}</customer_name>` +
+              `<firstName>${firstName}</firstName>` +
+              `<lastName>${lastName}</lastName>` +
+              //    `<Relationship>Director</Relationship>` +
               `<PPSN>${xe(d.ppsn)}</PPSN>` +
               `</Q_Applicant_Details>`;
           });
@@ -8333,6 +8339,7 @@
             `<Q_Applicant_Details>` +
             `<relationship_status>New</relationship_status>` +
             `<customer_type>Non Individual</customer_type>` +
+            `<BORROWER_CUST_ID>LOS-1653</BORROWER_CUST_ID>` +
             //  `<incor_form_date>2018-06-20</incr_form_date>` +
             `<customer_name>${app.entityDetails?.name || "Kellner Logistics Private Limited"}</customer_name>` +
             `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
