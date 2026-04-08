@@ -5986,10 +5986,7 @@
                           );
                           const parsed = raw !== null ? Number(raw) : NaN;
                           if (!isNaN(parsed) && parsed > 0) {
-                            const proposed = Math.max(
-                              0,
-                              parsed - Math.round((parsed * deposit) / 100),
-                            );
+                            const proposed = Math.max(0, parsed - depositAmt);
                             return `€${proposed.toLocaleString("en-IE")}`;
                           }
                           return "Vehicle is not Initiated from Dealer Portal";
