@@ -2585,6 +2585,10 @@
         };
 
         const verifyOtp = () => {
+          setModalStep(4);
+        };
+
+        const proceedToDashboard = () => {
           dispatch({
             type: "SET_AUTH",
             payload: {
@@ -2964,6 +2968,86 @@
                       </>
                     )}
                   </div>
+
+                  {/* Step 4 — Identity Verification Successful */}
+                  {modalStep === 4 && (
+                    <div style={{ padding: "28px 24px 8px" }}>
+                      <div
+                        style={{
+                          background: "#e8f5e9",
+                          borderRadius: 12,
+                          padding: "24px 20px",
+                          marginBottom: 20,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontWeight: 700,
+                            fontSize: 17,
+                            color: "#1b5e20",
+                            marginBottom: 16,
+                            textAlign: "center",
+                          }}
+                        >
+                          Identity Verification Successful
+                        </div>
+                        {[
+                          "Identity Verified",
+                          "Mobile Number Verified",
+                          "Authentication Complete",
+                        ].map((item) => (
+                          <div
+                            key={item}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                              marginBottom: 12,
+                              fontSize: 14,
+                              fontWeight: 500,
+                              color: "#1b5e20",
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: "50%",
+                                background: "#43a047",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#fff",
+                                fontSize: 13,
+                                flexShrink: 0,
+                              }}
+                            >
+                              ✓
+                            </span>
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        className="btn btn-lg"
+                        style={{
+                          width: "100%",
+                          background: "#43a047",
+                          color: "#fff",
+                          fontWeight: 600,
+                          fontSize: 15,
+                          marginBottom: 12,
+                          border: "none",
+                          borderRadius: 8,
+                          padding: "13px 0",
+                          cursor: "pointer",
+                        }}
+                        onClick={proceedToDashboard}
+                      >
+                        Proceed to Dashboard →
+                      </button>
+                    </div>
+                  )}
 
                   {/* Footer */}
                   <div
