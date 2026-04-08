@@ -5540,6 +5540,8 @@
         const mileage = 15000;
         const [apr, setApr] = useState(6.9);
         const [selectedProduct, setSelectedProduct] = useState(null);
+        const [compareLoading, setCompareLoading] = useState(false);
+        const [recommendedProduct, setRecommendedProduct] = useState(null);
         const loanBase =
           state.application.vehicles.reduce(
             (s, v) => s + Number(v.unitPrice || 42800) * Number(v.units || 1),
