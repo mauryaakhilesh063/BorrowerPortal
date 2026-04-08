@@ -8323,9 +8323,12 @@
           }
           const extraAttributesXml =
             `${vehicleDetailsXml}` +
-            `<SubmittedAt>${new Date().toISOString()}</SubmittedAt>` +
             `<LOCALE>en_IR</LOCALE>` +
             `<Exist_New_Borrower>New</Exist_New_Borrower>` +
+            `<BORROWER_CUST_ID>LOS-1653</BORROWER_CUST_ID>` +
+            // `<Application_Receipt_Date>${submittedAt}</Application_Receipt_Date>` +
+            `<Branch>001</Branch>` +
+            `<Region>Head Office/Main Branch</Region>` +
             `<Q_Basic_Details>` +
             `<SourcingChannel>DSA</SourcingChannel>` +
             `<RelationshipManager>Conor Walsh</RelationshipManager>` +
@@ -8334,7 +8337,6 @@
             `<Denomination>Actual</Denomination>` +
             `<Financial_Type>Conventional</Financial_Type>` +
             `<Request_Type>New</Request_Type>` +
-            `<Application_Receipt_Date>${app.entityDetails?.incorporationDate || ""}</Application_Receipt_Date>` +
             `</Q_Basic_Details>` +
             `<Q_Applicant_Details>` +
             `<relationship_status>New</relationship_status>` +
