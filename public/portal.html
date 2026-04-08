@@ -5590,7 +5590,10 @@
             addToast("Please select a financing product to proceed", "error");
             return;
           }
-          dispatch({ type: "SET_APP", payload: { financials: form } });
+          dispatch({
+            type: "SET_APP",
+            payload: { financials: { ...form, deposit: String(deposit) } },
+          });
           navigate("app_new/3");
         };
 
@@ -8589,6 +8592,44 @@
                 {kv("Deposit", "20% (€24,960)")}
                 {kv("APR", "6.5% p.a.")}
                 {kv("Data Consent", "✅ Granted")}
+                {kv(
+                  "Total Vehicle Cost",
+                  (() => {
+                    const raw = window.localStorage.getItem(
+                      "totalVehicleLoanAmount",
+                    );
+                    const parsed = raw !== null ? Number(raw) : NaN;
+                    return !isNaN(parsed) && parsed > 0
+                      ? `€${parsed.toLocaleString("en-IE")}`
+                      : "Vehicle is not Initiated from Dealer Portal";
+                  })(),
+                )}
+                {kv(
+                  "Proposed Finance Amount",
+                  (() => {
+                    const raw = window.localStorage.getItem(
+                      "totalVehicleLoanAmount",
+                    );
+                    const parsed = raw !== null ? Number(raw) : NaN;
+                    if (!isNaN(parsed) && parsed > 0) {
+                      const depositPct = Number(
+                        state.application.financials?.deposit || 10,
+                      );
+                      const loanBase =
+                        state.application.vehicles.reduce(
+                          (s, v) =>
+                            s +
+                            Number(v.unitPrice || 42800) * Number(v.units || 1),
+                          0,
+                        ) || 124800;
+                      const depositAmt = Math.round(
+                        (loanBase * depositPct) / 100,
+                      );
+                      return `€${Math.max(0, parsed - depositAmt).toLocaleString("en-IE")}`;
+                    }
+                    return "Vehicle is not Initiated from Dealer Portal";
+                  })(),
+                )}
               </Section>
 
               <div
