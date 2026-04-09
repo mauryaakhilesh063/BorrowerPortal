@@ -4137,33 +4137,6 @@
             <div className="card" style={{ marginBottom: 16 }}>
               <div className="card-header">
                 <div className="card-title">Part C — Dealer Discovery</div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontSize: 12.5,
-                  }}
-                >
-                  <span style={{ color: "var(--muted)" }}>
-                    Quote Amount (localStorage):
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "DM Mono,monospace",
-                      fontWeight: 600,
-                      color: lsQuoteAmount ? "var(--success)" : "var(--danger)",
-                      background: lsQuoteAmount ? "#f0fdf4" : "#fef2f2",
-                      border: `1px solid ${lsQuoteAmount ? "#bbf7d0" : "#fecaca"}`,
-                      borderRadius: 6,
-                      padding: "2px 8px",
-                    }}
-                  >
-                    {lsQuoteAmount
-                      ? `€${Number(lsQuoteAmount).toLocaleString("en-IE")}`
-                      : "Not set"}
-                  </span>
-                </div>
               </div>
               <div className="card-body">
                 <div
@@ -5909,6 +5882,13 @@
             type: "SET_APP",
             payload: { financials: { ...form, deposit: String(deposit) } },
           });
+          // Persist Best Fit Scorecard selections for XML submission
+          window.localStorage.setItem(
+            "bfsSelectedProduct",
+            selectedProduct || "",
+          );
+          window.localStorage.setItem("bfsTerm", String(term));
+          window.localStorage.setItem("bfsDeposit", String(deposit));
           navigate("app_new/3");
         };
 
@@ -8612,8 +8592,49 @@
           }
           const now = new Date();
           const submittedAt = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+          // Read Best Fit Scorecard selections persisted from FinancialDetailsScreen
+          const bfsSelectedProduct =
+            window.localStorage.getItem("bfsSelectedProduct") || "";
+          const bfsTerm = window.localStorage.getItem("bfsTerm") || "";
+          const bfsDeposit = Number(
+            window.localStorage.getItem("bfsDeposit") || "10",
+          );
+          const bfsLoanBase = (() => {
+            const raw = window.localStorage.getItem("totalVehicleLoanAmount");
+            const parsed = raw !== null ? Number(raw) : NaN;
+            return !isNaN(parsed) && parsed > 0 ? parsed : 0;
+          })();
+          const bfsDepositAmt = Math.round((bfsLoanBase * bfsDeposit) / 100);
+          const bfsProposedFinanceAmt = Math.max(
+            0,
+            bfsLoanBase - bfsDepositAmt,
+          );
+
+          // Map selectedProduct to Product and LoanType values for XML
+          let productXmlValue = "";
+          let loanTypeXmlValue = "";
+          if (bfsSelectedProduct === "hpb") {
+            productXmlValue = "Term Loan";
+            loanTypeXmlValue = "Business Contract Hire";
+          } else if (bfsSelectedProduct === "bl") {
+            productXmlValue = "Leasing";
+            loanTypeXmlValue = "Business Leasing";
+          } else if (bfsSelectedProduct === "bch") {
+            productXmlValue = "Leasing";
+            loanTypeXmlValue = "Hire Purchase for Business";
+          }
+
           const extraAttributesXml =
             `${vehicleDetailsXml}` +
+            `<Q_Borrower_NewLoans>` +
+            `<RequestType>New</RequestType>` +
+            `<Limit_Type>General</Limit_Type>` +
+            `<Main_Facility>Yes</Main_Facility>` +
+            `<Product>${productXmlValue}</Product>` +
+            `<LoanType>${loanTypeXmlValue}</LoanType>` +
+            `<Tenor_In_Months>${bfsTerm}</Tenor_In_Months>` +
+            `<Proposed_Amount_Limit>${bfsProposedFinanceAmt}</Proposed_Amount_Limit>` +
+            `</Q_Borrower_NewLoans>` +
             `<LOCALE>en_IR</LOCALE>` +
             `<Exist_New_Borrower>New</Exist_New_Borrower>` +
             `<BORROWER_CUST_ID>LOS-1653</BORROWER_CUST_ID>` +
