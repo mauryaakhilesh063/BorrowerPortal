@@ -3662,7 +3662,7 @@
           category: "Passenger Car",
           manufacturer: "Toyota",
           model: "Corolla",
-          units: "1",
+          units: "5",
           unitPrice: "42800",
         });
         const [eircode, setEircode] = useState([]);
@@ -5540,8 +5540,8 @@
         const mileage = 15000;
         const [apr, setApr] = useState(6.9);
         const [selectedProduct, setSelectedProduct] = useState(null);
-        const [recommendedProduct, setRecommendedProduct] = useState(null);
         const [compareLoading, setCompareLoading] = useState(false);
+        const [recommendedProduct, setRecommendedProduct] = useState(null);
         const loanBase =
           state.application.vehicles.reduce(
             (s, v) => s + Number(v.unitPrice || 42800) * Number(v.units || 1),
@@ -5633,7 +5633,8 @@
             total: blTotal,
             ownership: "optional",
             balloon: true,
-            tag: recommendedProduct === "bl" ? "⭐ Recommended" : "Mileage-Linked",
+            tag:
+              recommendedProduct === "bl" ? "⭐ Recommended" : "Mileage-Linked",
             color: recommendedProduct === "bl" ? "#16a34a" : "#7c3aed",
             bg: recommendedProduct === "bl" ? "#f0fdf4" : "#f5f3ff",
             pros: [
@@ -5655,7 +5656,8 @@
             total: bchTotal,
             ownership: false,
             balloon: false,
-            tag: recommendedProduct === "bch" ? "⭐ Recommended" : "Contract Hire",
+            tag:
+              recommendedProduct === "bch" ? "⭐ Recommended" : "Contract Hire",
             color: recommendedProduct === "bch" ? "#16a34a" : "#7c3aed",
             bg: recommendedProduct === "bch" ? "#f0fdf4" : "#f5f3ff",
             pros: [
@@ -5668,7 +5670,14 @@
         ];
 
         const handleCompareRecommend = async () => {
-          if (!otherInfo.annualMileage || !otherInfo.usageType || !otherInfo.vatTreatment || !otherInfo.balanceSheetPref || !otherInfo.residualRiskAppetite || !otherInfo.ownershipIntent) {
+          if (
+            !otherInfo.annualMileage ||
+            !otherInfo.usageType ||
+            !otherInfo.vatTreatment ||
+            !otherInfo.balanceSheetPref ||
+            !otherInfo.residualRiskAppetite ||
+            !otherInfo.ownershipIntent
+          ) {
             addToast("Please fill all Other Info fields first", "error");
             return;
           }
@@ -5767,7 +5776,6 @@
                 ],
               },
             };
-
             const resp = await fetch("https://closdemo.newgensoftware.net/Lead/api/workitem/hitRule", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -5964,9 +5972,13 @@
                       onChange={updOI("usageType")}
                     >
                       <option value="">Select type</option>
-                      <option value="Executive / Admin">Executive / Admin</option>
+                      <option value="Executive / Admin">
+                        Executive / Admin
+                      </option>
                       <option value="Mixed Use">Mixed Use</option>
-                      <option value="Logistics / Commercial">Logistics / Commercial</option>
+                      <option value="Logistics / Commercial">
+                        Logistics / Commercial
+                      </option>
                     </select>
                   </div>
                   <div className="form-group">
@@ -5979,7 +5991,9 @@
                       onChange={updOI("vatTreatment")}
                     >
                       <option value="">Select preference</option>
-                      <option value="Full VAT reclaim desired">Full VAT reclaim desired</option>
+                      <option value="Full VAT reclaim desired">
+                        Full VAT reclaim desired
+                      </option>
                       <option value="Neutral">Neutral</option>
                       <option value="Not important">Not important</option>
                     </select>
@@ -5996,9 +6010,13 @@
                       onChange={updOI("balanceSheetPref")}
                     >
                       <option value="">Select preference</option>
-                      <option value="Off-balance sheet preference">Off-balance sheet preference</option>
+                      <option value="Off-balance sheet preference">
+                        Off-balance sheet preference
+                      </option>
                       <option value="Neutral">Neutral</option>
-                      <option value="On-balance sheet acceptable">On-balance sheet acceptable</option>
+                      <option value="On-balance sheet acceptable">
+                        On-balance sheet acceptable
+                      </option>
                     </select>
                   </div>
                   <div className="form-group">
@@ -6024,31 +6042,61 @@
                       onChange={updOI("ownershipIntent")}
                     >
                       <option value="">Select intent</option>
-                      <option value="No ownership intent">No ownership intent</option>
+                      <option value="No ownership intent">
+                        No ownership intent
+                      </option>
                       <option value="Optional">Optional</option>
-                      <option value="Strong ownership intent">Strong ownership intent</option>
+                      <option value="Strong ownership intent">
+                        Strong ownership intent
+                      </option>
                     </select>
                   </div>
                 </div>
                 {/* Compare & Recommend Button */}
-                <div style={{ textAlign: 'center', marginTop: 20 }}>
+                <div style={{ textAlign: "center", marginTop: 20 }}>
                   <button
                     onClick={handleCompareRecommend}
-                    disabled={compareLoading || !otherInfo.annualMileage || !otherInfo.usageType || !otherInfo.vatTreatment || !otherInfo.balanceSheetPref || !otherInfo.residualRiskAppetite || !otherInfo.ownershipIntent}
+                    disabled={
+                      compareLoading ||
+                      !otherInfo.annualMileage ||
+                      !otherInfo.usageType ||
+                      !otherInfo.vatTreatment ||
+                      !otherInfo.balanceSheetPref ||
+                      !otherInfo.residualRiskAppetite ||
+                      !otherInfo.ownershipIntent
+                    }
                     style={{
-                      background: (!otherInfo.annualMileage || !otherInfo.usageType || !otherInfo.vatTreatment || !otherInfo.balanceSheetPref || !otherInfo.residualRiskAppetite || !otherInfo.ownershipIntent) ? '#94a3b8' : 'linear-gradient(135deg, #1b75bc, #1a3a6b)',
-                      color: '#fff',
-                      border: 'none',
+                      background:
+                        !otherInfo.annualMileage ||
+                        !otherInfo.usageType ||
+                        !otherInfo.vatTreatment ||
+                        !otherInfo.balanceSheetPref ||
+                        !otherInfo.residualRiskAppetite ||
+                        !otherInfo.ownershipIntent
+                          ? "#94a3b8"
+                          : "linear-gradient(135deg, #1b75bc, #1a3a6b)",
+                      color: "#fff",
+                      border: "none",
                       borderRadius: 8,
-                      padding: '12px 32px',
+                      padding: "12px 32px",
                       fontSize: 14,
                       fontWeight: 600,
-                      cursor: (!otherInfo.annualMileage || !otherInfo.usageType || !otherInfo.vatTreatment || !otherInfo.balanceSheetPref || !otherInfo.residualRiskAppetite || !otherInfo.ownershipIntent) ? 'not-allowed' : 'pointer',
-                      boxShadow: 'var(--shadow-md)',
-                      transition: 'all 0.2s',
+                      cursor:
+                        !otherInfo.annualMileage ||
+                        !otherInfo.usageType ||
+                        !otherInfo.vatTreatment ||
+                        !otherInfo.balanceSheetPref ||
+                        !otherInfo.residualRiskAppetite ||
+                        !otherInfo.ownershipIntent
+                          ? "not-allowed"
+                          : "pointer",
+                      boxShadow: "var(--shadow-md)",
+                      transition: "all 0.2s",
                     }}
                   >
-                    {compareLoading ? '⏳ Comparing...' : '🎯 Compare & Recommend'}
+                    {compareLoading
+                      ? "⏳ Comparing..."
+                      : "🎯 Compare & Recommend"}
                   </button>
                 </div>
               </div>
@@ -8838,8 +8886,25 @@
               <Section num={6} title="Product Details">
                 {kv("Selected Product", "Business Contract Hire")}
                 {kv("Loan Term", "48 months")}
-                {kv("Deposit", "20% (€24,960)")}
-                {kv("APR", "6.5% p.a.")}
+                {kv(
+                  "Deposit",
+                  (() => {
+                    const raw = window.localStorage.getItem(
+                      "totalVehicleLoanAmount",
+                    );
+                    const parsed = raw !== null ? Number(raw) : NaN;
+                    const depositPct = Number(
+                      state.application.financials?.deposit || 10,
+                    );
+                    if (!isNaN(parsed) && parsed > 0) {
+                      const depositAmt = Math.round(
+                        (parsed * depositPct) / 100,
+                      );
+                      return `${depositPct}% (€${depositAmt.toLocaleString("en-IE")})`;
+                    }
+                    return `${depositPct}%`;
+                  })(),
+                )}
                 {kv("Data Consent", "✅ Granted")}
                 {kv(
                   "Total Vehicle Cost",
@@ -8864,15 +8929,8 @@
                       const depositPct = Number(
                         state.application.financials?.deposit || 10,
                       );
-                      const loanBase =
-                        state.application.vehicles.reduce(
-                          (s, v) =>
-                            s +
-                            Number(v.unitPrice || 42800) * Number(v.units || 1),
-                          0,
-                        ) || 124800;
                       const depositAmt = Math.round(
-                        (loanBase * depositPct) / 100,
+                        (parsed * depositPct) / 100,
                       );
                       return `€${Math.max(0, parsed - depositAmt).toLocaleString("en-IE")}`;
                     }
