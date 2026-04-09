@@ -5674,14 +5674,100 @@
           }
           setCompareLoading(true);
           try {
-            const payload = {
-              Annual_Mileage_In: otherInfo.annualMileage,
-              Usage_Type_In: otherInfo.usageType,
-              VAT_Treatment_Preference_In: otherInfo.vatTreatment,
-              Balance_Sheet_Preference_In: otherInfo.balanceSheetPref,
-              Residual_Value_Risk_Appetite_In: otherInfo.residualRiskAppetite,
-              Ownership_Intent_In: otherInfo.ownershipIntent,
+            // ── Step 1: Per-field BCH/BL/HP scores from scoring table ──
+            const SCORES = {
+              annualMileage: {
+                "Low":    { bch: 5, bl: 3, hp: 2 },
+                "Medium": { bch: 3, bl: 4, hp: 4 },
+                "High":   { bch: 2, bl: 4, hp: 5 },
+              },
+              usageType: {
+                "Executive / Admin":      { bch: 5, bl: 3, hp: 2 },
+                "Mixed Use":              { bch: 3, bl: 4, hp: 4 },
+                "Logistics / Commercial": { bch: 1, bl: 4, hp: 5 },
+              },
+              vatTreatment: {
+                "Full VAT reclaim desired": { bch: 5, bl: 4, hp: 3 },
+                "Neutral":                  { bch: 3, bl: 4, hp: 4 },
+                "Not important":            { bch: 2, bl: 3, hp: 5 },
+              },
+              balanceSheet: {
+                "Off-balance sheet preference":  { bch: 5, bl: 3, hp: 2 },
+                "Neutral":                       { bch: 3, bl: 4, hp: 4 },
+                "On-balance sheet acceptable":   { bch: 2, bl: 4, hp: 5 },
+              },
+              residualRisk: {
+                "Low":    { bch: 2, bl: 3, hp: 5 },
+                "Medium": { bch: 3, bl: 4, hp: 4 },
+                "High":   { bch: 5, bl: 4, hp: 2 },
+              },
+              ownershipIntent: {
+                "No ownership intent":      { bch: 5, bl: 3, hp: 1 },
+                "Optional":                 { bch: 3, bl: 5, hp: 4 },
+                "Strong ownership intent":  { bch: 1, bl: 3, hp: 5 },
+              },
             };
+            const zero = { bch: 0, bl: 0, hp: 0 };
+            const s1 = SCORES.annualMileage[otherInfo.annualMileage]       || zero;
+            const s2 = SCORES.usageType[otherInfo.usageType]               || zero;
+            const s3 = SCORES.vatTreatment[otherInfo.vatTreatment]         || zero;
+            const s4 = SCORES.balanceSheet[otherInfo.balanceSheetPref]     || zero;
+            const s5 = SCORES.residualRisk[otherInfo.residualRiskAppetite] || zero;
+            const s6 = SCORES.ownershipIntent[otherInfo.ownershipIntent]   || zero;
+
+            // ── Step 2: Total score per product (sum of all 6 fields) ──
+            const bchSeed = s1.bch + s2.bch + s3.bch + s4.bch + s5.bch + s6.bch;
+            const blSeed  = s1.bl  + s2.bl  + s3.bl  + s4.bl  + s5.bl  + s6.bl;
+            const hpSeed  = s1.hp  + s2.hp  + s3.hp  + s4.hp  + s5.hp  + s6.hp;
+
+            const payload = {
+              Input: [
+                {
+                  classIsArray: "N",
+                  className: "bestfit_in",
+                  Member: [
+                    { Type: "10", value: otherInfo.annualMileage       || "NA", Name: "annual_milage_ine" },
+                    { Type: "10", value: otherInfo.usageType            || "NA", Name: "usage_type_in" },
+                    { Type: "10", value: otherInfo.vatTreatment         || "NA", Name: "vat_treatment_in" },
+                    { Type: "10", value: otherInfo.balanceSheetPref     || "NA", Name: "balance_sheet_in" },
+                    { Type: "10", value: otherInfo.residualRiskAppetite || "NA", Name: "residual_value_in" },
+                    { Type: "10", value: otherInfo.ownershipIntent      || "NA", Name: "ownership_intent_in" },
+                  ],
+                },
+                {
+                  className: "bestfit_out",
+                  Member: [
+                    { Type: "3", value: String(s1.bch), Name: "annual_milage_bch_oute" },
+                    { Type: "3", value: String(s1.bl),  Name: "annual_milage_bl_oute" },
+                    { Type: "3", value: String(s1.hp),  Name: "annual_milage_hp_oute" },
+                    { Type: "3", value: String(bchSeed), Name: "annual_mileage_out" },
+                    { Type: "3", value: String(blSeed),  Name: "final_out_bl" },
+                    { Type: "3", value: String(hpSeed),  Name: "final_out_hp" },
+                    { Type: "3", value: String(s2.bl),  Name: "usage_type_b_outl" },
+                    { Type: "3", value: String(s2.bch), Name: "usage_type_bch_out" },
+                    { Type: "3", value: String(s2.hp),  Name: "usage_type_h_outp" },
+                    { Type: "3", value: String(s3.hp),  Name: "vat_treatment_h_outp" },
+                  ],
+                },
+              ],
+              Output: {
+                classIsArray: "N",
+                className: "bestfit_out",
+                Member: [
+                  { Type: "3", value: "0", Name: "annual_milage_bch_oute" },
+                  { Type: "3", value: "0", Name: "annual_milage_bl_oute" },
+                  { Type: "3", value: "0", Name: "annual_milage_hp_oute" },
+                  { Type: "3", value: "0", Name: "annual_mileage_out" },
+                  { Type: "3", value: "0", Name: "final_out_bl" },
+                  { Type: "3", value: "0", Name: "final_out_hp" },
+                  { Type: "3", value: "0", Name: "usage_type_b_outl" },
+                  { Type: "3", value: "0", Name: "usage_type_bch_out" },
+                  { Type: "3", value: "0", Name: "usage_type_h_outp" },
+                  { Type: "3", value: "0", Name: "vat_treatment_h_outp" },
+                ],
+              },
+            };
+
             const resp = await fetch("https://closdemo.newgensoftware.net/Lead/api/workitem/hitRule", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -5689,16 +5775,28 @@
             });
             if (!resp.ok) throw new Error("API error: " + resp.status);
             const data = await resp.json();
-            const bchScore = Number(data.Annual_Mileage_Out || data.Annual_Mileage_Out_BCH || 0);
-            const blScore = Number(data.Final_Out_BL || 0);
-            const hpScore = Number(data.Final_Out_HP || 0);
-            let best = "bch";
-            let bestScore = bchScore;
-            if (blScore > bestScore) { best = "bl"; bestScore = blScore; }
-            if (hpScore > bestScore) { best = "hpb"; bestScore = hpScore; }
-            setRecommendedProduct(best);
-            setSelectedProduct(best);
-            addToast("Recommendation calculated! BCH: " + bchScore + ", BL: " + blScore + ", HP: " + hpScore, "success");
+
+            // ── Step 3: Read scores from API response ──
+            const out = data?.Output?.bestfit_out || {};
+            const bchScore = Number(out.annual_mileage_out ?? bchSeed);
+            const blScore  = Number(out.final_out_bl       ?? blSeed);
+            const hpScore  = Number(out.final_out_hp       ?? hpSeed);
+
+            // ── Step 4: Compare and select winner ──
+            const maxScore = Math.max(bchScore, blScore, hpScore);
+            let winner;
+            if (maxScore === blScore && blScore >= bchScore && blScore >= hpScore) winner = "bl";
+            else if (maxScore === hpScore && hpScore >= bchScore) winner = "hpb";
+            else winner = "bch";
+
+            setRecommendedProduct(winner);
+            setSelectedProduct(winner);
+            addToast(
+              "Best fit analysis complete — " +
+              (winner === "bch" ? "Business Contract Hire" : winner === "bl" ? "Business Leasing" : "Hire Purchase for Business") +
+              " recommended! (BCH: " + bchScore + ", BL: " + blScore + ", HP: " + hpScore + ")",
+              "success"
+            );
           } catch (err) {
             console.error("Compare API error:", err);
             addToast("Failed to get recommendation: " + err.message, "error");
