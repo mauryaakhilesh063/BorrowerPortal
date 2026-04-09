@@ -8560,7 +8560,9 @@
             String(v || "")
               .replace(/&/g, "&amp;")
               .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;");
+              .replace(/>/g, "&gt;")
+              .replace(/'/g, "&apos;")
+              .replace(/"/g, "&quot;");
 
           const directors = app.directors || [];
           let directorItems = "";
@@ -8608,12 +8610,14 @@
               `<Action>${v.status || ""}</Action>` +
               `</Vechile_Details_table>`;
           }
+          const now = new Date();
+          const submittedAt = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
           const extraAttributesXml =
             `${vehicleDetailsXml}` +
             `<LOCALE>en_IR</LOCALE>` +
             `<Exist_New_Borrower>New</Exist_New_Borrower>` +
             `<BORROWER_CUST_ID>LOS-1653</BORROWER_CUST_ID>` +
-            // `<Application_Receipt_Date>${submittedAt}</Application_Receipt_Date>` +
+            `<Application_Receipt_Date>${submittedAt}</Application_Receipt_Date>` +
             `<Branch>001</Branch>` +
             `<Region>Head Office/Main Branch</Region>` +
             `<Q_Basic_Details>` +
@@ -8629,7 +8633,7 @@
             `<relationship_status>New</relationship_status>` +
             `<customer_type>Non Individual</customer_type>` +
             `<BORROWER_CUST_ID>LOS-1653</BORROWER_CUST_ID>` +
-            //  `<incor_form_date>2018-06-20</incr_form_date>` +
+            `<incor_form_date>2018-06-20</incor_form_date>` +
             `<customer_name>${app.entityDetails?.name || "Kellner Logistics Private Limited"}</customer_name>` +
             `<Constitution>${app.entityDetails?.constitution || "Private Limited Company"}</Constitution>` +
             `<CRO>${app.financials?.cron || "543210"}</CRO>` +
