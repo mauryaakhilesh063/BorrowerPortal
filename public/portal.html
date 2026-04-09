@@ -5542,11 +5542,17 @@
         const [selectedProduct, setSelectedProduct] = useState(null);
         const [compareLoading, setCompareLoading] = useState(false);
         const [recommendedProduct, setRecommendedProduct] = useState(null);
-        const loanBase =
-          state.application.vehicles.reduce(
-            (s, v) => s + Number(v.unitPrice || 42800) * Number(v.units || 1),
-            0,
-          ) || 124800;
+        const loanBase = (() => {
+          const raw = window.localStorage.getItem("totalVehicleLoanAmount");
+          const parsed = raw !== null ? Number(raw) : NaN;
+          if (!isNaN(parsed) && parsed > 0) return parsed;
+          return (
+            state.application.vehicles.reduce(
+              (s, v) => s + Number(v.unitPrice || 42800) * Number(v.units || 1),
+              0,
+            ) || 124800
+          );
+        })();
         const depositAmt = Math.round((loanBase * deposit) / 100);
         const financedAmt = Math.max(0, loanBase - depositAmt);
         const hpRate = Math.max(0.001, apr / 100 / 12);
