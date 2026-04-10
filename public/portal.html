@@ -8615,11 +8615,10 @@
             const v = vehicleList[i];
             vehicleDetailsXml +=
               `<Vechile_Details_table>` +
-              `<VehicleID>${i + 1}</VehicleID>` +
+              `<VechileID>${i + 1}</VechileID>` +
               `<Manufacturer>${v.manufacturer || ""}</Manufacturer>` +
-              `<VehicleMakeModel>${v.model || ""}</VehicleMakeModel>` +
-              `<TotalRequestedAmount>${Number(v.unitPrice || 0) * Number(v.units || 0)}</TotalRequestedAmount>` +
-              `<Action>${v.status || ""}</Action>` +
+              `<Vechile_Make>${v.model || ""}</Vechile_Make>` +
+              `<Total_Requested_Amount>${Number(v.unitPrice || 0) * Number(v.units || 0)}</Total_Requested_Amount>` +
               `</Vechile_Details_table>`;
           }
           const now = new Date();
