@@ -8323,17 +8323,21 @@
             ...d,
             [type]: { status: "uploading", name: file.name },
           }));
-          setTimeout(() => {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
             setDocs((d) => ({
               ...d,
               [type]: {
                 status: "done",
                 name: file.name,
                 size: (file.size / 1024).toFixed(0) + "KB",
+                mimeType: file.type,
+                dataUrl: ev.target.result,
               },
             }));
             addToast(`${file.name} uploaded successfully`, "success");
-          }, 1200);
+          };
+          reader.readAsDataURL(file);
           e.target.value = "";
         };
         const remove = (type) => {
@@ -8342,6 +8346,24 @@
             delete n[type];
             return n;
           });
+        };
+        const viewDoc = (s) => {
+          try {
+            const parts = s.dataUrl.split(",");
+            const byteChars = atob(parts[1]);
+            const byteNums = new Uint8Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) {
+              byteNums[i] = byteChars.charCodeAt(i);
+            }
+            const blob = new Blob([byteNums], { type: s.mimeType });
+            const blobUrl = URL.createObjectURL(blob);
+            const opened = window.open(blobUrl, "_blank");
+            if (!opened) {
+              addToast("Please allow popups to view documents", "error");
+            }
+          } catch (err) {
+            addToast("Unable to open document: " + err.message, "error");
+          }
         };
 
         const reqCount = REQ_DOCS.filter((d) => d.required).length;
@@ -8414,7 +8436,12 @@
                 )}
                 {s?.status === "done" && (
                   <>
-                    <button className="btn btn-secondary btn-sm">View</button>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => viewDoc(s)}
+                    >
+                      View
+                    </button>
                     <button
                       className="btn btn-danger-outline btn-sm"
                       onClick={() => remove(doc.type)}
