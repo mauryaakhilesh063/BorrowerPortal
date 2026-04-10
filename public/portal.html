@@ -4347,7 +4347,7 @@
                                       }}
                                       onClick={() => receiveQuote(d.id)}
                                     >
-                                      Simulate Quote
+                                      Refresh
                                     </button>
                                   )}
                                   {(qs === "received" || qs === "accepted") && (
@@ -8282,23 +8282,27 @@
           {
             type: "fin",
             name: "Latest 2 Years Audited Financial Statements",
-            required: true,
+            required: false,
           },
           {
             type: "mgmt",
             name: "YTD Management Certified Financials",
-            required: true,
+            required: false,
           },
           {
             type: "addr",
             name: "Proof of Business Address (utility bill < 3 months)",
-            required: true,
+            required: false,
           },
-          { type: "vat", name: "VAT Registration Certificate", required: true },
+          {
+            type: "vat",
+            name: "VAT Registration Certificate",
+            required: false,
+          },
           {
             type: "bank",
             name: "Bank Statements (last 6 months)",
-            required: true,
+            required: false,
           },
           { type: "isp", name: "Interim Sales Performance", required: false },
         ];
@@ -8700,6 +8704,8 @@
             `<LoanType>${loanTypeXmlValue}</LoanType>` +
             `<Tenor_In_Months>${bfsTerm}</Tenor_In_Months>` +
             `<Proposed_Amount_Limit>${bfsProposedFinanceAmt}</Proposed_Amount_Limit>` +
+            `<Nature_of_Facility>Fund Based</Nature_of_Facility>` +
+            `<LOS_Facility_ID>1-L</LOS_Facility_ID>` +
             `${vehicleDetailsXml}` +
             `</Q_Borrower_NewLoans>` +
             directorItems +
