@@ -3349,6 +3349,7 @@
                   children: [
                     { id: "other_requests", label: "Account Enquiry" },
                     { id: "payment", label: "Payment" },
+                    { id: "Other Information", label: "Other Information" },
                   ],
                 },
               ]
@@ -3667,8 +3668,18 @@
           category: "Passenger Car",
           manufacturer: "Toyota",
           model: "Corolla",
-          units: "5",
+          variant: "",
+          fuelType: "Petrol",
           unitPrice: "42800",
+          insurance: "0",
+          includeInsurance: "Yes",
+          discount: "0",
+          otherCharges: "0",
+          units: "5",
+          deposit: "0",
+          dealersPayout: "0",
+          includePayoutForFinance: "No",
+          assetCategory: "Vehicle",
         });
         const [eircode, setEircode] = useState([]);
         const [dealers, setDealers] = useState([]);
@@ -5291,125 +5302,125 @@
 
                         // Create printable HTML content
                         const printContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Quotation - ${dealerName}</title>
-        <style>
-          @page { margin: 20mm; }
-          body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
-          .header { background: #1a3a6b; color: white; padding: 30px; text-align: center; margin: -20px -20px 30px -20px; }
-          .header h1 { margin: 0 0 10px 0; font-size: 28px; }
-          .header p { margin: 5px 0; font-size: 14px; opacity: 0.9; }
-          .info-row { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 12px; }
-          .section { margin-bottom: 30px; }
-          .section-title { font-size: 14px; font-weight: bold; text-transform: uppercase; color: #1a3a6b; margin-bottom: 15px; border-bottom: 2px solid #1a3a6b; padding-bottom: 5px; }
-          .info-box { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
-          .info-box p { margin: 5px 0; font-size: 13px; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-          th { background: #f5f5f5; padding: 10px; text-align: left; font-size: 11px; font-weight: bold; border-bottom: 2px solid #ddd; }
-          td { padding: 10px; border-bottom: 1px solid #eee; font-size: 12px; }
-          .pricing-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
-          .total-row { display: flex; justify-content: space-between; padding: 15px 0; font-size: 18px; font-weight: bold; border-top: 2px solid #333; margin-top: 10px; }
-          .validity-box { background: #fffbeb; border: 1px solid #fde68a; padding: 15px; border-radius: 5px; margin: 20px 0; }
-          .validity-box h4 { margin: 0 0 10px 0; color: #92400e; font-size: 13px; }
-          .validity-box p { margin: 5px 0; font-size: 12px; color: #78350f; }
-          .footer { border-top: 2px solid #ddd; padding-top: 20px; margin-top: 30px; font-size: 11px; color: #666; display: flex; justify-content: space-between; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>DEALER QUOTATION</h1>
-          <p style="font-size:16px; margin-top:10px;">${dealerName}</p>
-          <p>${dealerAddress}</p>
-        </div>
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <title>Quotation - ${dealerName}</title>
+              <style>
+                @page { margin: 20mm; }
+                body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+                .header { background: #1a3a6b; color: white; padding: 30px; text-align: center; margin: -20px -20px 30px -20px; }
+                .header h1 { margin: 0 0 10px 0; font-size: 28px; }
+                .header p { margin: 5px 0; font-size: 14px; opacity: 0.9; }
+                .info-row { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 12px; }
+                .section { margin-bottom: 30px; }
+                .section-title { font-size: 14px; font-weight: bold; text-transform: uppercase; color: #1a3a6b; margin-bottom: 15px; border-bottom: 2px solid #1a3a6b; padding-bottom: 5px; }
+                .info-box { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+                .info-box p { margin: 5px 0; font-size: 13px; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+                th { background: #f5f5f5; padding: 10px; text-align: left; font-size: 11px; font-weight: bold; border-bottom: 2px solid #ddd; }
+                td { padding: 10px; border-bottom: 1px solid #eee; font-size: 12px; }
+                .pricing-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
+                .total-row { display: flex; justify-content: space-between; padding: 15px 0; font-size: 18px; font-weight: bold; border-top: 2px solid #333; margin-top: 10px; }
+                .validity-box { background: #fffbeb; border: 1px solid #fde68a; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                .validity-box h4 { margin: 0 0 10px 0; color: #92400e; font-size: 13px; }
+                .validity-box p { margin: 5px 0; font-size: 12px; color: #78350f; }
+                .footer { border-top: 2px solid #ddd; padding-top: 20px; margin-top: 30px; font-size: 11px; color: #666; display: flex; justify-content: space-between; }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>DEALER QUOTATION</h1>
+                <p style="font-size:16px; margin-top:10px;">${dealerName}</p>
+                <p>${dealerAddress}</p>
+              </div>
 
-        <div class="info-row">
-          <div><strong>Quotation No:</strong> ${quoteNo}</div>
-          <div><strong>Date:</strong> ${quoteDate}</div>
-        </div>
+              <div class="info-row">
+                <div><strong>Quotation No:</strong> ${quoteNo}</div>
+                <div><strong>Date:</strong> ${quoteDate}</div>
+              </div>
 
-        <div class="section">
-          <div class="section-title">Customer Details</div>
-          <div class="info-box">
-            <p><strong>Entity Name:</strong> Kellner Logistics Private Limited</p>
-            <p><strong>CRO Number:</strong> 543210</p>
-            <p><strong>Contact Person:</strong> Aoife Brennan</p>
-          </div>
-        </div>
+              <div class="section">
+                <div class="section-title">Customer Details</div>
+                <div class="info-box">
+                  <p><strong>Entity Name:</strong> Kellner Logistics Private Limited</p>
+                  <p><strong>CRO Number:</strong> 543210</p>
+                  <p><strong>Contact Person:</strong> Aoife Brennan</p>
+                </div>
+              </div>
 
-        <div class="section">
-          <div class="section-title">Vehicle Details</div>
-          <table>
-            <thead>
-              <tr>
-                <th>STATUS</th>
-                <th>CATEGORY</th>
-                <th>MANUFACTURER</th>
-                <th>MODEL</th>
-                <th style="text-align:right">UNITS</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${state.application.vehicles
-                .slice(0, 5)
-                .map(
-                  (v) => `
-                <tr>
-                  <td>${v.status}</td>
-                  <td>${v.category}</td>
-                  <td>${v.manufacturer}</td>
-                  <td><strong>${v.model}</strong></td>
-                  <td style="text-align:right"><strong>${v.units}</strong></td>
-                </tr>
-              `,
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </div>
+              <div class="section">
+                <div class="section-title">Vehicle Details</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>STATUS</th>
+                      <th>CATEGORY</th>
+                      <th>MANUFACTURER</th>
+                      <th>MODEL</th>
+                      <th style="text-align:right">UNITS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${state.application.vehicles
+                      .slice(0, 5)
+                      .map(
+                        (v) => `
+                      <tr>
+                        <td>${v.status}</td>
+                        <td>${v.category}</td>
+                        <td>${v.manufacturer}</td>
+                        <td><strong>${v.model}</strong></td>
+                        <td style="text-align:right"><strong>${v.units}</strong></td>
+                      </tr>
+                    `,
+                      )
+                      .join("")}
+                  </tbody>
+                </table>
+              </div>
 
-        <div class="section">
-          <div class="section-title">Pricing Summary</div>
-          <div class="info-box">
-            <div class="pricing-row">
-              <span>Vehicle Total (Ex. VAT)</span>
-              <span><strong>€${exVat}</strong></span>
-            </div>
-            <div class="pricing-row">
-              <span>VAT @ 23%</span>
-              <span><strong>€${vat}</strong></span>
-            </div>
-            <div class="pricing-row">
-              <span>VRT (Vehicle Registration Tax)</span>
-              <span><strong>€${vrt}</strong></span>
-            </div>
-            <div class="total-row">
-              <span>TOTAL QUOTE AMOUNT</span>
-              <span style="color:#1b75bc">€${quoteAmount.toLocaleString("en-IE")}</span>
-            </div>
-          </div>
-        </div>
+              <div class="section">
+                <div class="section-title">Pricing Summary</div>
+                <div class="info-box">
+                  <div class="pricing-row">
+                    <span>Vehicle Total (Ex. VAT)</span>
+                    <span><strong>€${exVat}</strong></span>
+                  </div>
+                  <div class="pricing-row">
+                    <span>VAT @ 23%</span>
+                    <span><strong>€${vat}</strong></span>
+                  </div>
+                  <div class="pricing-row">
+                    <span>VRT (Vehicle Registration Tax)</span>
+                    <span><strong>€${vrt}</strong></span>
+                  </div>
+                  <div class="total-row">
+                    <span>TOTAL QUOTE AMOUNT</span>
+                    <span style="color:#1b75bc">€${quoteAmount.toLocaleString("en-IE")}</span>
+                  </div>
+                </div>
+              </div>
 
-        <div class="validity-box">
-          <h4>⏰ Quote Validity</h4>
-          <p>This quotation is valid for 14 days from the issue date. All prices are subject to vehicle availability and confirmation of specification.</p>
-        </div>
+              <div class="validity-box">
+                <h4>⏰ Quote Validity</h4>
+                <p>This quotation is valid for 14 days from the issue date. All prices are subject to vehicle availability and confirmation of specification.</p>
+              </div>
 
-        <div class="footer">
-          <div>
-            <p><strong>${dealerName}</strong></p>
-            <p>Email: quotes@${dealerName.toLowerCase().replace(/\s+/g, "")}.ie</p>
-            <p>Phone: +353 1 XXX XXXX</p>
-          </div>
-          <div style="text-align:right">
-            <p>Generated: ${new Date().toLocaleString("en-IE")}</p>
-            <p style="font-size:10px; margin-top:5px">Powered by Capital Flow Finance Platform</p>
-          </div>
-        </div>
-      </body>
-      </html>`;
+              <div class="footer">
+                <div>
+                  <p><strong>${dealerName}</strong></p>
+                  <p>Email: quotes@${dealerName.toLowerCase().replace(/\s+/g, "")}.ie</p>
+                  <p>Phone: +353 1 XXX XXXX</p>
+                </div>
+                <div style="text-align:right">
+                  <p>Generated: ${new Date().toLocaleString("en-IE")}</p>
+                  <p style="font-size:10px; margin-top:5px">Powered by Capital Flow Finance Platform</p>
+                </div>
+              </div>
+            </body>
+            </html>`;
 
                         // Open in new window and trigger print
                         const printWindow = window.open("", "_blank");
@@ -8277,12 +8288,12 @@
           {
             type: "coi",
             name: "Certificate of Incorporation / Business Registration",
-            required: true,
+            required: false,
           },
           {
             type: "fin",
             name: "Latest 2 Years Audited Financial Statements",
-            required: false,
+            required: true,
           },
           {
             type: "mgmt",
@@ -8708,6 +8719,78 @@
             `<LOS_Facility_ID>1-L</LOS_Facility_ID>` +
             `${vehicleDetailsXml}` +
             `</Q_Borrower_NewLoans>` +
+            (() => {
+              let vsXml = "";
+              const vl = app.vehicles || [];
+              // Fallback: values entered in Other Information screen
+              const oi = app.orderInfo || {};
+              for (let i = 0; i < vl.length; i++) {
+                const v = vl[i];
+                if (!v) continue;
+                // Merge per-vehicle fields with OtherInformation screen values
+                const merged = { ...oi, ...v };
+                const exShowroom = Number(
+                  String(merged.unitPrice || "0").replace(/[^0-9.]/g, ""),
+                );
+                const insurance = Number(
+                  String(merged.insurance || "0").replace(/[^0-9.]/g, ""),
+                );
+                const discount = Number(
+                  String(merged.discount || "0").replace(/[^0-9.]/g, ""),
+                );
+                const otherChg = Number(
+                  String(merged.otherCharges || "0").replace(/[^0-9.]/g, ""),
+                );
+                const units = Number(
+                  String(merged.units || v.units || "1").replace(
+                    /[^0-9.]/g,
+                    "",
+                  ),
+                );
+                const deposit = Number(
+                  String(merged.deposit || "0").replace(/[^0-9.]/g, ""),
+                );
+                const dealerPay = Number(
+                  String(merged.dealersPayout || "0").replace(/[^0-9.]/g, ""),
+                );
+                const onRoadPrice =
+                  exShowroom + insurance + otherChg - discount;
+                const totalVehCost = onRoadPrice * units;
+                const netReqAmt = Math.max(0, totalVehCost - deposit);
+                const incPayout =
+                  (merged.includePayoutForFinance || "No") === "Yes";
+                const totalReqAmt = netReqAmt + (incPayout ? dealerPay : 0);
+                const ltv =
+                  onRoadPrice > 0
+                    ? ((netReqAmt / onRoadPrice) * 100).toFixed(2)
+                    : "0.00";
+                vsXml +=
+                  `<Q_VehicleSubform>` +
+                  `<field1>${xe(v.status)}</field1>` +
+                  `<field2>${xe(v.category)}</field2>` +
+                  `<field3>${xe(v.manufacturer)}</field3>` +
+                  `<field4>${xe(v.model)}</field4>` +
+                  `<field5>${xe(merged.variant)}</field5>` +
+                  `<field6>${xe(merged.fuelType)}</field6>` +
+                  `<field7>${exShowroom.toFixed(2)}</field7>` +
+                  `<field8>${insurance.toFixed(2)}</field8>` +
+                  `<field9>${xe(merged.includeInsurance || "Yes")}</field9>` +
+                  `<field10>${discount.toFixed(2)}</field10>` +
+                  `<field11>${otherChg.toFixed(2)}</field11>` +
+                  `<field12>${onRoadPrice.toFixed(2)}</field12>` +
+                  `<field13>${units}</field13>` +
+                  `<field14>${totalVehCost.toFixed(2)}</field14>` +
+                  `<field15>${deposit.toFixed(2)}</field15>` +
+                  `<field16>${netReqAmt.toFixed(2)}</field16>` +
+                  `<field17>${dealerPay.toFixed(2)}</field17>` +
+                  `<field18>${xe(merged.includePayoutForFinance || "No")}</field18>` +
+                  `<field19>${totalReqAmt.toFixed(2)}</field19>` +
+                  `<field20>${xe(merged.assetCategory)}</field20>` +
+                  `<field21>${ltv}</field21>` +
+                  `</Q_VehicleSubform>`;
+              }
+              return vsXml;
+            })() +
             directorItems +
             loanItems;
 
@@ -12047,6 +12130,282 @@
         );
       }
 
+      // ─── OTHER INFORMATION SCREEN ────────────────────────────────────────────────
+      function OtherInformationScreen({ addToast }) {
+        const { state, dispatch } = useContext(AppCtx);
+        const savedOI = state.application.orderInfo || {};
+        const [orderInfo, setOrderInfo] = useState({
+          variant: "",
+          fuelType: "Petrol",
+          unitPrice: "0",
+          insurance: "0",
+          includeInsurance: "Yes",
+          discount: "0",
+          otherCharges: "0",
+          units: "1",
+          deposit: "0",
+          dealersPayout: "0",
+          includePayoutForFinance: "No",
+          assetCategory: "Vehicle",
+          ...savedOI,
+        });
+        const updOI = (k) => (e) => {
+          const updated = { ...orderInfo, [k]: e.target.value };
+          setOrderInfo(updated);
+          dispatch({ type: "SET_APP", payload: { orderInfo: updated } });
+        };
+        const oiOnRoadPrice =
+          Number(orderInfo.unitPrice || 0) +
+          Number(orderInfo.insurance || 0) +
+          Number(orderInfo.otherCharges || 0) -
+          Number(orderInfo.discount || 0);
+        const oiTotalVehCost = oiOnRoadPrice * Number(orderInfo.units || 0);
+        const oiNetReqAmt = Math.max(
+          0,
+          oiTotalVehCost - Number(orderInfo.deposit || 0),
+        );
+        const oiIncPayout = orderInfo.includePayoutForFinance === "Yes";
+        const oiTotalReqAmt =
+          oiNetReqAmt +
+          (oiIncPayout ? Number(orderInfo.dealersPayout || 0) : 0);
+        const oiLtv =
+          oiOnRoadPrice > 0
+            ? ((oiNetReqAmt / oiOnRoadPrice) * 100).toFixed(2)
+            : "0.00";
+
+        return (
+          <div className="page-body">
+            <div style={{ marginBottom: 20 }}>
+              <h2 className="section-header" style={{ marginBottom: 2 }}>
+                📋 Other Information
+              </h2>
+              <p className="text-muted">Vehicle order details and pricing</p>
+            </div>
+
+            <div className="card">
+              <div className="card-header">
+                <div className="card-title">🛒 Make Order</div>
+              </div>
+              <div className="card-body">
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: "var(--blue)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.8px",
+                    marginBottom: 14,
+                    paddingBottom: 8,
+                    borderBottom: "2px solid var(--border)",
+                  }}
+                >
+                  Other Info
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3,1fr)",
+                    gap: 14,
+                  }}
+                >
+                  <div className="form-group">
+                    <label className="form-label">Variant</label>
+                    <input
+                      className="form-control"
+                      value={orderInfo.variant}
+                      onChange={updOI("variant")}
+                      placeholder="e.g. 1.5 VVT-i"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Fuel Type</label>
+                    <select
+                      className="form-control"
+                      value={orderInfo.fuelType}
+                      onChange={updOI("fuelType")}
+                    >
+                      {["Petrol", "Diesel", "Hybrid", "Electric", "LPG"].map(
+                        (o) => (
+                          <option key={o}>{o}</option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Ex-Showroom Price (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      value={orderInfo.unitPrice}
+                      onChange={updOI("unitPrice")}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Insurance (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      value={orderInfo.insurance}
+                      onChange={updOI("insurance")}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Include Insurance For Finance
+                    </label>
+                    <select
+                      className="form-control"
+                      value={orderInfo.includeInsurance}
+                      onChange={updOI("includeInsurance")}
+                    >
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Discount (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      value={orderInfo.discount}
+                      onChange={updOI("discount")}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Other Charges (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      value={orderInfo.otherCharges}
+                      onChange={updOI("otherCharges")}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">On-Road Price (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      readOnly
+                      style={{
+                        background: "#f8fafc",
+                        color: "var(--blue)",
+                        fontWeight: 600,
+                      }}
+                      value={oiOnRoadPrice.toFixed(2)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Units</label>
+                    <input
+                      className="form-control"
+                      type="number"
+                      min="1"
+                      value={orderInfo.units}
+                      onChange={updOI("units")}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Total Vehicle Cost (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      readOnly
+                      style={{
+                        background: "#f8fafc",
+                        color: "var(--blue)",
+                        fontWeight: 600,
+                      }}
+                      value={oiTotalVehCost.toFixed(2)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Deposit (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      value={orderInfo.deposit}
+                      onChange={updOI("deposit")}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Net Requested Amount (€)
+                    </label>
+                    <input
+                      className="form-control text-mono"
+                      readOnly
+                      style={{
+                        background: "#f8fafc",
+                        color: "var(--blue)",
+                        fontWeight: 600,
+                      }}
+                      value={oiNetReqAmt.toFixed(2)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Dealer's Payout (€)</label>
+                    <input
+                      className="form-control text-mono"
+                      value={orderInfo.dealersPayout}
+                      onChange={updOI("dealersPayout")}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Include Payout For Finance
+                    </label>
+                    <select
+                      className="form-control"
+                      value={orderInfo.includePayoutForFinance}
+                      onChange={updOI("includePayoutForFinance")}
+                    >
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Total Requested Amount (€)
+                    </label>
+                    <input
+                      className="form-control text-mono"
+                      readOnly
+                      style={{
+                        background: "#f8fafc",
+                        color: "var(--blue)",
+                        fontWeight: 600,
+                      }}
+                      value={oiTotalReqAmt.toFixed(2)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Asset Category</label>
+                    <input
+                      className="form-control"
+                      value={orderInfo.assetCategory}
+                      onChange={updOI("assetCategory")}
+                      placeholder="Vehicle"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">LTV (%)</label>
+                    <input
+                      className="form-control text-mono"
+                      readOnly
+                      style={{
+                        background: "#f8fafc",
+                        color: "var(--blue)",
+                        fontWeight: 600,
+                      }}
+                      value={oiLtv}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
       // ─── OTHER REQUESTS SCREEN ───────────────────────────────────────────────────
       function OtherRequestsScreen({ addToast }) {
         return (
@@ -12338,6 +12697,9 @@
                     <OtherRequestsScreen addToast={addToast} />
                   )}
                   {page === "payment" && <PaymentScreen addToast={addToast} />}
+                  {page === "Other Information" && (
+                    <OtherInformationScreen addToast={addToast} />
+                  )}
                 </div>
               </div>
             )}
