@@ -1515,6 +1515,84 @@
           border: 1px solid #ddd !important;
         }
       }
+
+      /* ── LOADER OVERLAY ── */
+      .loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 22px;
+        animation: loaderFadeIn 0.2s ease;
+      }
+      @keyframes loaderFadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .loader-ring {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.12);
+        border-top-color: #1b75bc;
+        border-right-color: #8dc63f;
+        animation: loaderSpin 0.85s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        box-shadow: 0 0 36px rgba(27, 117, 188, 0.4);
+      }
+      @keyframes loaderSpin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loader-label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: -0.3px;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      }
+      .loader-dots {
+        display: flex;
+        gap: 8px;
+      }
+      .loader-dots span {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #8dc63f;
+        animation: loaderBounce 1.3s ease-in-out infinite;
+      }
+      .loader-dots span:nth-child(2) {
+        animation-delay: 0.18s;
+        background: #56b8d8;
+      }
+      .loader-dots span:nth-child(3) {
+        animation-delay: 0.36s;
+        background: #1b75bc;
+      }
+      @keyframes loaderBounce {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.7);
+          opacity: 0.5;
+        }
+        40% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1889,6 +1967,22 @@
         contracted: { label: "Contracted", cls: "badge-green" },
       };
 
+      // ─── LOADER OVERLAY COMPONENT ─────────────────────────────────────────────
+      function LoaderOverlay({ message }) {
+        if (!message) return null;
+        return (
+          <div className="loader-overlay">
+            <div className="loader-ring" />
+            <div className="loader-label">{message}</div>
+            <div className="loader-dots">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        );
+      }
+
       // ─── SMALL COMPONENTS ────────────────────────────────────────────────────────
       function StatusBadge({ status }) {
         const s = statusMap[status] || { label: status, cls: "badge-gray" };
@@ -2248,16 +2342,6 @@
                 >
                   Welcome
                 </h3>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "var(--muted)",
-                    marginBottom: 32,
-                    fontWeight: 400,
-                  }}
-                >
-                  Kindly Provide Registration Number
-                </p>
 
                 {/* Initial Registration Number Entry */}
                 {!journeyType && (
@@ -2284,7 +2368,6 @@
                         className="form-control"
                         value={form.registrationNumber}
                         onChange={upd("registrationNumber")}
-                        placeholder="e.g., 456789"
                         style={{
                           fontFamily: "DM Mono,monospace",
                           fontSize: 15,
@@ -2295,13 +2378,6 @@
                           transition: "all 0.2s ease",
                         }}
                       />
-                      <div
-                        className="form-hint"
-                        style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}
-                      >
-                        Enter 456789 for new customer or 678901 for existing
-                        customer
-                      </div>
                     </div>
 
                     <button
@@ -3489,18 +3565,6 @@
                 Aoife Brennan
               </div>
               <div className="avatar">AB</div>
-              <button
-                className="btn btn-secondary btn-sm"
-                onClick={logout}
-                style={{
-                  fontSize: 12,
-                  padding: "5px 10px",
-                  color: "var(--danger)",
-                  borderColor: "#fecaca",
-                }}
-              >
-                ⏏ Logout
-              </button>
             </div>
           </div>
         );
@@ -3684,6 +3748,7 @@
         const [eircode, setEircode] = useState([]);
         const [dealers, setDealers] = useState([]);
         const [searched, setSearched] = useState(false);
+        const [searchingDealers, setSearchingDealers] = useState(false);
         const [quoteStates, setQuoteStates] = useState({});
         const [quoteAmounts, setQuoteAmounts] = useState({});
         const [selected, setSelected] = useState({});
@@ -3715,14 +3780,19 @@
           );
         };
         const searchDealers = () => {
-          setDealers(DEALERS);
-          setSearched(true);
+          setSearchingDealers(true);
+          setTimeout(() => {
+            setDealers(DEALERS);
+            setSearched(true);
+            setSearchingDealers(false);
+          }, 5000);
         };
 
-        // Auto-populate dealers when resuming an application
+        // Auto-populate dealers when resuming an application (no loader)
         useEffect(() => {
           if (state.application.resuming) {
-            searchDealers();
+            setDealers(DEALERS);
+            setSearched(true);
             dispatch({ type: "SET_APP", payload: { resuming: false } });
           }
         }, []);
@@ -4178,10 +4248,17 @@
                       style={{ fontFamily: "DM Mono,monospace" }}
                     />
                   </div>
-                  <button className="btn btn-navy" onClick={searchDealers}>
+                  <button
+                    className="btn btn-navy"
+                    onClick={searchDealers}
+                    disabled={searchingDealers}
+                  >
                     🔍 Find Dealers Near Me
                   </button>
                 </div>
+                {searchingDealers && (
+                  <LoaderOverlay message="Searching Dealers…" />
+                )}
                 {searched && (
                   <>
                     <div style={{ overflowX: "auto", marginBottom: 16 }}>
@@ -5885,6 +5962,8 @@
           }
         };
 
+        const [fetchingDetails, setFetchingDetails] = useState(false);
+
         const onNext = () => {
           if (!consent) {
             addToast("Please provide consent to proceed", "error");
@@ -5894,6 +5973,7 @@
             addToast("Please select a financing product to proceed", "error");
             return;
           }
+          setFetchingDetails(true);
           dispatch({
             type: "SET_APP",
             payload: { financials: { ...form, deposit: String(deposit) } },
@@ -5905,7 +5985,10 @@
           );
           window.localStorage.setItem("bfsTerm", String(term));
           window.localStorage.setItem("bfsDeposit", String(deposit));
-          navigate("app_new/3");
+          setTimeout(() => {
+            setFetchingDetails(false);
+            navigate("app_new/3");
+          }, 5000);
         };
 
         return (
@@ -6771,12 +6854,14 @@
                 <button
                   className="btn btn-primary"
                   onClick={onNext}
+                  disabled={fetchingDetails}
                   style={{ opacity: consent && selectedProduct ? 1 : 0.55 }}
                 >
                   Next: Customer Details →
                 </button>
               </div>
             </div>
+            {fetchingDetails && <LoaderOverlay message="Fetching Details…" />}
           </div>
         );
       }
