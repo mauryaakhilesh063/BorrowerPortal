@@ -3404,8 +3404,8 @@
             label: "Applications",
             section: "Applications",
             children: [
-              { id: "app_new", label: "New Application" },
-              { id: "app_existing", label: "Status" },
+              { id: "app_new", label: "New" },
+              { id: "app_existing", label: "Existing" },
             ],
           },
           {
@@ -6643,31 +6643,7 @@
                                 padding: "2px 7px",
                                 color: "var(--muted)",
                               }}
-                            >
-                              Deposit: €{depositAmt.toLocaleString("en-IE")}
-                            </span>
-                            {p.balloon && (
-                              <span
-                                style={{
-                                  background: "#f5f3ff",
-                                  borderRadius: 4,
-                                  padding: "2px 7px",
-                                  color: "#7c3aed",
-                                }}
-                              >
-                                Mileage: {mileage.toLocaleString("en-IE")} km
-                              </span>
-                            )}
-                            <span
-                              style={{
-                                background: "#f1f5f9",
-                                borderRadius: 4,
-                                padding: "2px 7px",
-                                color: "var(--muted)",
-                              }}
-                            >
-                              Total: €{p.total.toLocaleString("en-IE")}
-                            </span>
+                            ></span>
                           </div>
                           <div style={{ fontSize: 12 }}>
                             {p.pros.map((pr, i) => (
@@ -11452,7 +11428,7 @@
         const [loanAccounts] = useState([
           {
             disbursementDate: "15/03/2026",
-            loanAcc: "LAC-2026-001",
+            loanAcc: "CNTR-IE-00355 — BCH 48 months",
             financeAmount: 18500,
             principalOutstanding: 16800,
             interestDue: 425,
@@ -11462,23 +11438,13 @@
           },
           {
             disbursementDate: "20/02/2026",
-            loanAcc: "LAC-2026-002",
+            loanAcc: "CNTR-IE-00300 — HP 36 months",
             financeAmount: 24000,
             principalOutstanding: 22100,
             interestDue: 580,
             dpd: 0,
             totalTenure: 60,
             remainingTenure: 48,
-          },
-          {
-            disbursementDate: "10/01/2026",
-            loanAcc: "LAC-2026-003",
-            financeAmount: 15000,
-            principalOutstanding: 14200,
-            interestDue: 350,
-            dpd: 5,
-            totalTenure: 36,
-            remainingTenure: 24,
           },
         ]);
 
