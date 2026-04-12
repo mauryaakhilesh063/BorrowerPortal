@@ -5962,8 +5962,6 @@
           }
         };
 
-        const [fetchingDetails, setFetchingDetails] = useState(false);
-
         const onNext = () => {
           if (!consent) {
             addToast("Please provide consent to proceed", "error");
@@ -5973,7 +5971,6 @@
             addToast("Please select a financing product to proceed", "error");
             return;
           }
-          setFetchingDetails(true);
           dispatch({
             type: "SET_APP",
             payload: { financials: { ...form, deposit: String(deposit) } },
@@ -5985,10 +5982,7 @@
           );
           window.localStorage.setItem("bfsTerm", String(term));
           window.localStorage.setItem("bfsDeposit", String(deposit));
-          setTimeout(() => {
-            setFetchingDetails(false);
-            navigate("app_new/3");
-          }, 5000);
+          navigate("app_new/3");
         };
 
         return (
@@ -6830,14 +6824,12 @@
                 <button
                   className="btn btn-primary"
                   onClick={onNext}
-                  disabled={fetchingDetails}
                   style={{ opacity: consent && selectedProduct ? 1 : 0.55 }}
                 >
                   Next: Customer Details →
                 </button>
               </div>
             </div>
-            {fetchingDetails && <LoaderOverlay message="Fetching Details…" />}
           </div>
         );
       }
@@ -6847,6 +6839,10 @@
         const { state, dispatch, addToast } = useContext(AppCtx);
         const ed = state.application.entityDetails || {};
         const cp = state.application.contactPerson || {};
+
+        // CRO auto-fetch loader state
+        const [croLoading, setCroLoading] = useState(true);
+        const [croDone, setCroDone] = useState(false);
 
         // Entity Details state
         const [entity, setEntity] = useState({
@@ -6890,6 +6886,65 @@
           sameAsDirector: true,
         });
 
+        // Auto-fetch CRO data on screen mount (triggered by "Next: Customer Details" navigation)
+        useEffect(() => {
+          const t = setTimeout(() => {
+            // Populate all entity fields EXCEPT vatNo and industry
+            setEntity((prev) => ({
+              ...prev,
+              cro: "543210",
+              legalName: "Kellner Logistics Private Limited",
+              constitution: "Private Limited Company",
+              incorporationDate: "2015-03-15",
+              website: "www.kellnerlogistics.ie",
+              // vatNo intentionally left unchanged
+              // industry intentionally left unchanged
+            }));
+            // Populate all address fields
+            setAddress({
+              regLine1: "Unit 12, Parkwest Business Park",
+              regLine2: "",
+              regCity: "Dublin",
+              regCounty: "Dublin 12",
+              regEircode: "D12 KF89",
+              tradingLine1: "",
+              tradingCity: "",
+              tradingEircode: "",
+              sameAsReg: true,
+            });
+            // Populate directors and signatory from CRO data
+            setDirectors([
+              {
+                id: Date.now(),
+                name: "Aoife Brennan",
+                role: "Director",
+                dob: "2015-03-15",
+                ppsn: "1234567TW",
+                sharePercent: "60",
+                nationality: "Irish",
+                isAuthorisedSignatory: true,
+              },
+              {
+                id: Date.now() + 1,
+                name: "Liam O'Sullivan",
+                role: "Director & Shareholder",
+                dob: "1978-11-22",
+                ppsn: "7654321AB",
+                sharePercent: "40",
+                nationality: "Irish",
+                isAuthorisedSignatory: false,
+              },
+            ]);
+            setCroLoading(false);
+            setCroDone(true);
+            addToast(
+              "CRO data fetched successfully — Entity, Address, Directors and Signatory details populated",
+              "success",
+            );
+          }, 4000);
+          return () => clearTimeout(t);
+        }, []);
+
         const updE = (k) => (e) =>
           setEntity((f) => ({ ...f, [k]: e.target.value }));
         const updA = (k) => (e) =>
@@ -6914,8 +6969,30 @@
           addToast("Director added", "success");
         };
 
+        const croLoaderMessage = (
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                fontWeight: 700,
+                fontSize: 22,
+                marginBottom: 16,
+                letterSpacing: -0.3,
+              }}
+            >
+              Fetching CRO Details
+            </div>
+            <div style={{ fontSize: 15, lineHeight: 2.2, fontWeight: 400 }}>
+              <div>📋 Entity Details</div>
+              <div>📍 Address Details</div>
+              <div>👥 Directors&apos; and Signatory Details</div>
+              <div>📊 Shareholding</div>
+            </div>
+          </div>
+        );
+
         return (
           <div className="page-body">
+            {croLoading && <LoaderOverlay message={croLoaderMessage} />}
             <Stepper step={3} />
             <div
               style={{
@@ -7020,6 +7097,11 @@
                         "CRO data fetched successfully - Entity, Address, and Director details populated",
                         "success",
                       );
+                    }}
+                    disabled={croDone}
+                    style={{
+                      opacity: croDone ? 0.5 : 1,
+                      cursor: croDone ? "not-allowed" : "pointer",
                     }}
                   >
                     🔍 Fetch CRO Data
@@ -8738,6 +8820,8 @@
             `<Application_Receipt_Date>${submittedAt}</Application_Receipt_Date>` +
             `<Branch>001</Branch>` +
             `<Region>Head Office/Main Branch</Region>` +
+            `<Q_Applicant_Name>${app.entityDetails?.name || "Kellner Logistics Private Limited"}</Q_Applicant_Name>` +
+            `<Q_RelMng>Conor Walsh</Q_RelMng>` +
             `<Q_Basic_Details>` +
             `<SourcingChannel>DSA</SourcingChannel>` +
             `<RelationshipManager>Conor Walsh</RelationshipManager>` +
@@ -10192,34 +10276,6 @@
             date: "15/03/2025",
             entityName: "Kellner Logistics Ltd",
             refNumber: "IAF-0088003100874-CL105",
-            status: "query_received",
-          },
-          {
-            id: "LOAN-002",
-            date: "10/03/2025",
-            entityName: "Brennan & Sons Transport",
-            refNumber: "IAF-0088003100875-CL106",
-            status: "query_responded",
-          },
-          {
-            id: "LOAN-003",
-            date: "25/03/2025",
-            entityName: "Dublin Transport Co",
-            refNumber: "IAF-0088003100876-CL107",
-            status: "query_received",
-          },
-          {
-            id: "LOAN-004",
-            date: "26/03/2025",
-            entityName: "O'Brien Fleet Services",
-            refNumber: "IAF-0088003100877-CL108",
-            status: "query_responded",
-          },
-          {
-            id: "LOAN-005",
-            date: "28/02/2025",
-            entityName: "Cork Haulage Limited",
-            refNumber: "IAF-0088003100878-CL109",
             status: "query_received",
           },
         ]);
