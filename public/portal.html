@@ -3991,7 +3991,7 @@
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(7,1fr) auto",
+                    gridTemplateColumns: "0.6fr 1.4fr 1fr 1fr 90px auto",
                     gap: 12,
                     alignItems: "end",
                     marginBottom: 20,
@@ -4056,16 +4056,6 @@
                       ))}
                     </select>
                   </div>
-                  <div className="form-group" style={{ display: "none" }}>
-                    <label className="form-label">Unit Price (€)</label>
-                    <input
-                      className="form-control text-mono"
-                      value={vForm.unitPrice}
-                      onChange={vUpd("unitPrice")}
-                      placeholder="42800"
-                      style={{ minWidth: 80 }}
-                    />
-                  </div>
                   <div className="form-group">
                     <label className="form-label">Units</label>
                     <input
@@ -4074,30 +4064,7 @@
                       min="1"
                       value={vForm.units}
                       onChange={vUpd("units")}
-                      style={{ width: 70 }}
                     />
-                  </div>
-                  <div className="form-group" style={{ display: "none" }}>
-                    <label
-                      className="form-label"
-                      style={{ color: "var(--muted)", fontSize: 11 }}
-                    >
-                      Line Total
-                    </label>
-                    <div
-                      style={{
-                        fontFamily: "DM Mono,monospace",
-                        fontWeight: 700,
-                        fontSize: 13,
-                        padding: "9px 0",
-                        color: "var(--blue)",
-                      }}
-                    >
-                      €
-                      {(
-                        Number(vForm.unitPrice || 0) * Number(vForm.units || 0)
-                      ).toLocaleString("en-IE")}
-                    </div>
                   </div>
                   <button
                     className="btn btn-primary"
