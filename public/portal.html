@@ -3733,21 +3733,22 @@
 
       function VehicleDetailsScreen({ navigate }) {
         const { state, dispatch, addToast } = useContext(AppCtx);
+        const isNewCustomer = state.auth.customerType === "new";
         const [contract, setContract] = useState("new");
         const [contractNo, setContractNo] = useState("");
         const [vForm, setVForm] = useState({
-          status: "New",
-          category: "Passenger Car",
-          manufacturer: "Toyota",
-          model: "Corolla",
+          status: isNewCustomer ? "" : "New",
+          category: isNewCustomer ? "" : "Passenger Car",
+          manufacturer: isNewCustomer ? "" : "Toyota",
+          model: isNewCustomer ? "" : "Corolla",
           variant: "",
-          fuelType: "Petrol",
-          unitPrice: "42800",
+          fuelType: isNewCustomer ? "" : "Petrol",
+          unitPrice: isNewCustomer ? "" : "42800",
           insurance: "0",
           includeInsurance: "Yes",
           discount: "0",
           otherCharges: "0",
-          units: "5",
+          units: isNewCustomer ? "" : "5",
           deposit: "0",
           dealersPayout: "0",
           includePayoutForFinance: "No",
@@ -4128,6 +4129,9 @@
                       value={vForm.status}
                       onChange={vUpd("status")}
                     >
+                      <option value="" disabled>
+                        Select
+                      </option>
                       {["New", "Used"].map((o) => (
                         <option key={o}>{o}</option>
                       ))}
@@ -4140,6 +4144,9 @@
                       value={vForm.category}
                       onChange={vUpd("category")}
                     >
+                      <option value="" disabled>
+                        Select
+                      </option>
                       {[
                         "Passenger Car",
                         "Light Commercial Vehicle (LCV)",
@@ -4155,14 +4162,16 @@
                       className="form-control"
                       value={vForm.manufacturer}
                       onChange={(e) => {
-                        vUpd("manufacturer")(e);
                         setVForm((f) => ({
                           ...f,
                           manufacturer: e.target.value,
-                          model: (VEHICLE_MODELS[e.target.value] || [""])[0],
+                          model: "",
                         }));
                       }}
                     >
+                      <option value="" disabled>
+                        Select
+                      </option>
                       {MANUFACTURERS.map((o) => (
                         <option key={o}>{o}</option>
                       ))}
@@ -4175,6 +4184,9 @@
                       value={vForm.model}
                       onChange={vUpd("model")}
                     >
+                      <option value="" disabled>
+                        Select
+                      </option>
                       {(VEHICLE_MODELS[vForm.manufacturer] || []).map((o) => (
                         <option key={o}>{o}</option>
                       ))}
@@ -7224,6 +7236,16 @@
                       value={entity.legalName}
                       onChange={updE("legalName")}
                       placeholder="Full registered name"
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                   <div className="form-group">
@@ -7234,6 +7256,16 @@
                       className="form-control"
                       value={entity.constitution}
                       onChange={updE("constitution")}
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     >
                       {[
                         "Private Limited Company",
@@ -7254,6 +7286,16 @@
                       type="date"
                       value={entity.incorporationDate}
                       onChange={updE("incorporationDate")}
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                 </div>
@@ -7355,6 +7397,16 @@
                       value={address.regLine1}
                       onChange={updA("regLine1")}
                       placeholder="Street address"
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                   <div className="form-group">
@@ -7364,6 +7416,16 @@
                       value={address.regLine2}
                       onChange={updA("regLine2")}
                       placeholder="Apt, suite, etc."
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                   <div className="form-group">
@@ -7375,6 +7437,16 @@
                       value={address.regCity}
                       onChange={updA("regCity")}
                       placeholder="Dublin"
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                 </div>
@@ -7386,6 +7458,16 @@
                       value={address.regCounty}
                       onChange={updA("regCounty")}
                       placeholder="Dublin"
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                   <div className="form-group">
@@ -7395,6 +7477,16 @@
                       value={address.regEircode}
                       onChange={updA("regEircode")}
                       placeholder="D12 KF89"
+                      disabled={croDone}
+                      style={
+                        croDone
+                          ? {
+                              background: "#f1f5f9",
+                              color: "#475569",
+                              cursor: "not-allowed",
+                            }
+                          : {}
+                      }
                     />
                   </div>
                 </div>
