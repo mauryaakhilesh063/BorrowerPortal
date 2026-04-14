@@ -2991,7 +2991,8 @@
                           </label>
                           <input
                             className={`form-control${otpError ? " error" : ""}`}
-                            type="text"
+                            type="password"
+                            inputMode="numeric"
                             maxLength={6}
                             value={otp}
                             onChange={(e) => {
