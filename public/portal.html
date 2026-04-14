@@ -6964,7 +6964,7 @@
           cro: "",
           vatNo: "",
           incorporationDate: "",
-          industry: "WATER TRANSPORT",
+          industry: "",
           website: "",
         });
         // Address Details state
@@ -7389,7 +7389,7 @@
                         legalName: "Kellner Logistics Private Limited",
                         constitution: "Private Limited Company",
                         incorporationDate: "2015-03-15",
-                        industry: "WATER TRANSPORT",
+                        industry: "",
                       }));
                       setAddress((a) => ({
                         ...a,
@@ -7524,7 +7524,7 @@
                       className="form-control text-mono"
                       value={entity.vatNo}
                       onChange={updE("vatNo")}
-                      placeholder="IE9876543B"
+                      placeholder=""
                     />
                   </div>
                   <div className="form-group">
@@ -7535,6 +7535,7 @@
                       onChange={updE("industry")}
                     >
                       {[
+                        "Select",
                         "Transport & Logistics",
                         "WATER TRANSPORT",
                         "AGRICULTURE - INDIRECT",
