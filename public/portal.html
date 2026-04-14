@@ -4026,7 +4026,7 @@
             >
               <div>
                 <h2 className="section-header" style={{ marginBottom: 2 }}>
-                  🚛 Fleet Request
+                  🚛 Vehicle Request
                 </h2>
                 <p className="text-muted">
                   Step 1 of 4 — Define vehicles and request dealer quotations
@@ -7346,10 +7346,6 @@
               </div>
               <div className="card-body">
                 {/* CRO Number lookup - first field */}
-                <div className="info-banner" style={{ marginBottom: 16 }}>
-                  ℹ️ Enter your CRO Number to auto-populate Entity Details,
-                  Address, and Director information
-                </div>
                 <div
                   style={{
                     display: "flex",
@@ -7370,7 +7366,14 @@
                       value={entity.cro}
                       onChange={updE("cro")}
                       placeholder="e.g. 543210"
-                      style={{ fontSize: 15, fontWeight: 600 }}
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        background: "#f1f5f9",
+                        color: "#475569",
+                        cursor: "not-allowed",
+                      }}
+                      disabled
                     />
                   </div>
                   <button
