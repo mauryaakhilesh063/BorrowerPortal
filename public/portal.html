@@ -6955,6 +6955,7 @@
         // CRO auto-fetch loader state
         const [croLoading, setCroLoading] = useState(true);
         const [croDone, setCroDone] = useState(false);
+        const [croStep, setCroStep] = useState(0); // 0=none, 1-4=each item ticked
 
         // Entity Details state
         const [entity, setEntity] = useState({
@@ -7000,6 +7001,11 @@
 
         // Auto-fetch CRO data on screen mount (triggered by "Next: Customer Details" navigation)
         useEffect(() => {
+          // Tick each checklist item sequentially
+          const t1 = setTimeout(() => setCroStep(1), 700);
+          const t2 = setTimeout(() => setCroStep(2), 1500);
+          const t3 = setTimeout(() => setCroStep(3), 2400);
+          const t4 = setTimeout(() => setCroStep(4), 3200);
           const t = setTimeout(() => {
             // Populate all entity fields EXCEPT vatNo and industry
             setEntity((prev) => ({
@@ -7054,7 +7060,7 @@
               "success",
             );
           }, 4000);
-          return () => clearTimeout(t);
+          return () => [t1, t2, t3, t4, t].forEach(clearTimeout);
         }, []);
 
         const updE = (k) => (e) =>
@@ -7081,30 +7087,237 @@
           addToast("Director added", "success");
         };
 
-        const croLoaderMessage = (
-          <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontWeight: 700,
-                fontSize: 22,
-                marginBottom: 16,
-                letterSpacing: -0.3,
-              }}
-            >
-              Fetching CRO Details
+        const CroLoader = () => {
+          const items = [
+            { label: "Entity Details", icon: "📋" },
+            { label: "Address Details", icon: "📍" },
+            { label: "Directors\u2019 and Signatory Details", icon: "👥" },
+            { label: "Shareholding", icon: "📊" },
+          ];
+          return (
+            <div style={{ textAlign: "center" }}>
+              <style>{`
+                @keyframes croTickPop {
+                  0%   { transform: scale(0.4); opacity: 0; }
+                  60%  { transform: scale(1.3);  opacity: 1; }
+                  100% { transform: scale(1);    opacity: 1; }
+                }
+                .cro-tick { animation: croTickPop 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+                @keyframes croPulse {
+                  0%,100% { opacity: 0.45; transform: scale(0.9); }
+                  50%     { opacity: 1;    transform: scale(1);   }
+                }
+                .cro-pending { animation: croPulse 1.1s ease-in-out infinite; }
+                @keyframes croWaveSpin {
+                  from { transform: rotate(0deg); }
+                  to   { transform: rotate(360deg); }
+                }
+                .cro-wave-ring { animation: croWaveSpin 3s linear infinite; transform-origin: center; }
+                @keyframes croWaveSpinReverse {
+                  from { transform: rotate(0deg); }
+                  to   { transform: rotate(-360deg); }
+                }
+                .cro-wave-ring-inner { animation: croWaveSpinReverse 2.2s linear infinite; transform-origin: center; }
+              `}</style>
+
+              {/* SVG wavy-knot ring container */}
+              <div
+                style={{
+                  position: "relative",
+                  width: 320,
+                  height: 320,
+                  margin: "0 auto 20px",
+                }}
+              >
+                {/* SVG: outer wavy-knot ring spinning */}
+                <svg
+                  className="cro-wave-ring"
+                  viewBox="0 0 320 320"
+                  width="320"
+                  height="320"
+                  style={{ position: "absolute", top: 0, left: 0 }}
+                >
+                  <defs>
+                    <linearGradient
+                      id="ringGrad"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop offset="0%" stopColor="#1b75bc" />
+                      <stop offset="50%" stopColor="#8dc63f" />
+                      <stop offset="100%" stopColor="#1a3a6b" />
+                    </linearGradient>
+                  </defs>
+                  {/* Main circle path */}
+                  <circle
+                    cx="160"
+                    cy="160"
+                    r="148"
+                    fill="none"
+                    stroke="url(#ringGrad)"
+                    strokeWidth="5"
+                    opacity="0.9"
+                  />
+                  {/* Wave / knot petal shapes at top — 5 overlapping lobes */}
+                  {[0, 1, 2, 3, 4].map((i) => {
+                    const angle = (i * 72 * Math.PI) / 180;
+                    const cx2 = 160 + Math.cos(angle - Math.PI / 2) * 148;
+                    const cy2 = 160 + Math.sin(angle - Math.PI / 2) * 148;
+                    return (
+                      <ellipse
+                        key={i}
+                        cx={cx2}
+                        cy={cy2}
+                        rx="22"
+                        ry="12"
+                        transform={`rotate(${i * 72}, ${cx2}, ${cy2})`}
+                        fill="none"
+                        stroke="url(#ringGrad)"
+                        strokeWidth="4.5"
+                        opacity="0.85"
+                      />
+                    );
+                  })}
+                </svg>
+
+                {/* SVG: inner thin ring counter-spinning */}
+                <svg
+                  className="cro-wave-ring-inner"
+                  viewBox="0 0 320 320"
+                  width="320"
+                  height="320"
+                  style={{ position: "absolute", top: 0, left: 0 }}
+                >
+                  <circle
+                    cx="160"
+                    cy="160"
+                    r="136"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.08)"
+                    strokeWidth="2"
+                    strokeDasharray="12 8"
+                  />
+                </svg>
+
+                {/* Checklist centered inside the ring */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 12,
+                  }}
+                >
+                  {items.map((item, idx) => {
+                    const done = croStep > idx;
+                    const active = croStep === idx;
+                    return (
+                      <div
+                        key={idx}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                          width: 190,
+                        }}
+                      >
+                        {/* Tick circle */}
+                        <div
+                          style={{
+                            width: 28,
+                            height: 28,
+                            borderRadius: "50%",
+                            flexShrink: 0,
+                            background: done
+                              ? "linear-gradient(135deg,#4a9e2a,#3a7e21)"
+                              : active
+                                ? "rgba(255,255,255,0.15)"
+                                : "rgba(255,255,255,0.05)",
+                            border: done
+                              ? "none"
+                              : active
+                                ? "2px solid rgba(255,255,255,0.6)"
+                                : "2px solid rgba(255,255,255,0.12)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "background 0.3s, border 0.3s",
+                            boxShadow: done
+                              ? "0 2px 8px rgba(74,158,42,0.55)"
+                              : "none",
+                          }}
+                        >
+                          {done ? (
+                            <span
+                              className="cro-tick"
+                              style={{
+                                fontSize: 13,
+                                color: "#fff",
+                                lineHeight: 1,
+                              }}
+                            >
+                              ✓
+                            </span>
+                          ) : (
+                            <span
+                              className={active ? "cro-pending" : ""}
+                              style={{
+                                fontSize: 12,
+                                opacity: active ? 1 : 0.3,
+                              }}
+                            >
+                              {item.icon}
+                            </span>
+                          )}
+                        </div>
+                        {/* Label */}
+                        <span
+                          style={{
+                            fontSize: 12.5,
+                            fontWeight: done ? 600 : 400,
+                            color: done
+                              ? "#ffffff"
+                              : active
+                                ? "rgba(255,255,255,0.95)"
+                                : "rgba(255,255,255,0.35)",
+                            transition: "color 0.3s",
+                            textAlign: "left",
+                          }}
+                        >
+                          {item.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  fontSize: 17,
+                  fontWeight: 700,
+                  color: "#fff",
+                  letterSpacing: -0.3,
+                }}
+              >
+                Fetching CRO Details
+              </div>
             </div>
-            <div style={{ fontSize: 15, lineHeight: 2.2, fontWeight: 400 }}>
-              <div>📋 Entity Details</div>
-              <div>📍 Address Details</div>
-              <div>👥 Directors&apos; and Signatory Details</div>
-              <div>📊 Shareholding</div>
-            </div>
-          </div>
-        );
+          );
+        };
 
         return (
           <div className="page-body">
-            {croLoading && <LoaderOverlay message={croLoaderMessage} />}
+            {croLoading && (
+              <div className="loader-overlay">
+                <CroLoader />
+              </div>
+            )}
             <Stepper step={3} />
             <div
               style={{
