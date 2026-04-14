@@ -1382,11 +1382,14 @@
       /* DISABLED STATE CONSISTENCY */
       input:disabled,
       select:disabled,
-      textarea:disabled,
-      button:disabled {
+      textarea:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         background: #f8fafc;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
       }
 
       /* PLACEHOLDER STYLING */
@@ -2027,6 +2030,8 @@
                 key={i}
                 ref={(el) => (inputs.current[i] = el)}
                 className="otp-input form-control"
+                type="password"
+                inputMode="numeric"
                 maxLength={1}
                 value={d}
                 onChange={(e) => handle(i, e)}
@@ -2140,7 +2145,7 @@
           customerId: "CUST-IE-8821",
           mobile: "+353861234567",
           email: "",
-          constitution: "Private Limited Company",
+          constitution: "",
           entityName: "",
           registrationNumber: "",
         });
@@ -2515,6 +2520,7 @@
                           border: "1.5px solid var(--border)",
                         }}
                       >
+                        <option value="">Select Constitution Type</option>
                         {[
                           "Private Limited Company",
                           "Public Limited Company",
@@ -7142,7 +7148,7 @@
                     />
                   </div>
                   <button
-                    className="btn btn-navy"
+                    className="btn btn-navy btn-no-hover"
                     onClick={() => {
                       if (!entity.cro) {
                         addToast("Please enter CRO Number", "error");
@@ -7192,10 +7198,16 @@
                       );
                     }}
                     disabled={croDone}
-                    style={{
-                      opacity: croDone ? 0.5 : 1,
-                      cursor: croDone ? "not-allowed" : "pointer",
-                    }}
+                    style={
+                      croDone
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #1a3a6b 0%, #0d2240 100%)",
+                            opacity: 0.5,
+                            cursor: "not-allowed",
+                          }
+                        : {}
+                    }
                   >
                     🔍 Fetch CRO Data
                   </button>
