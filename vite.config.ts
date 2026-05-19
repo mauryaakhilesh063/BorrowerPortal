@@ -38,6 +38,6 @@ export default defineConfig(({ mode, command }) => {
         "react/jsx-dev-runtime",
       ],
     },
-    base: command === "build" ? "/BorrowerPortalMotorFinance/" : "/",
+    base: command === "build" ? "/BorrowerPortal/" : "/",
   };
 });
